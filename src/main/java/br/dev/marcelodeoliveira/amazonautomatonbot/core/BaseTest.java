@@ -8,11 +8,13 @@ import org.junit.Before;
 import org.openqa.selenium.Dimension;
 
 public class BaseTest {
+	
+	protected BaseTest() {}
 	@Before
 	public void inicializa() {
 
 		getDriver().get(CoreProperties.basePath.toString());
-		getDriver().manage().window().setSize(new Dimension(1366, 796));
+		getDriver().manage().window().setSize(new Dimension(1280, 720));
 
 	}
 
