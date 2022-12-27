@@ -2,6 +2,7 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.core;
 
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,34 +10,51 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.Wait;
 
-public abstract class BasePage {
+public  class BasePage {
 
 	protected String path;
 	protected Actions actions;
 
+	protected By navLinkAccountList = By.xpath("//*[@id='nav-link-accountList']");
+	protected By navBarLoginStatus =  By.xpath( "//*[@id='nav-link-accountList-nav-line-1']");
+	protected By navFlyOut = By.xpath("//*[@id='nav-flyout-accountList']");
+	protected By logoutListElement = By.xpath("//*[@id='nav-item-signout']/*[.='Sair da conta']");
+protected By navItemSignout = By.xpath("//*[@id='nav-item-signout']");
+
 	protected BasePage() {
-		this.path = CoreProperties.basePath;
+		this.path = CoreProperties.BASE_PATH;
 		this.actions = new Actions(getDriver());
+	}
+	
+	public Actions getActions() {
+		return actions;
 	}
 
 	@Before
 	public void inicializa() {
 
-		getDriver().get(CoreProperties.basePath.toString());
+		getDriver().get(CoreProperties.BASE_PATH.toString());
 		// getDriver().manage().window().setSize(new Dimension(1366, 796));
 
 	}
 
 	/********* TextField e TextArea ************/
 
-	public void escrever(By by, String texto) {
+	public void escrever  (By by, String texto)  {
+		//getDriver().switchTo().defaultContent();
+
 		getDriver().findElement(by).clear();
+		
 		getDriver().findElement(by).sendKeys(texto);
 	}
 
@@ -152,7 +170,10 @@ public abstract class BasePage {
 	/********* Textos ************/
 
 	public String obterTexto(By by) {
-		return getDriver().findElement(by).getText();
+		return obterTexto(getDriver().findElement(by));
+	}
+	public String obterTextoTrimado(By by) {
+		return obterTexto(getDriver().findElement(by)).trim();
 	}
 
 	public String obterTexto(String id) {
@@ -212,6 +233,8 @@ public abstract class BasePage {
 		js.executeScript(cod, args);
 
 	}
+	
+
 
 	/********* Tabela ************/
 
@@ -275,8 +298,17 @@ public abstract class BasePage {
 
 	}
 	
-	public void moveToWebElementAndClick (WebElement clickableElement) {
+	public String moveToWebElementAndClick (WebElement clickableElement) {
 		actions.moveToElement(clickableElement).click().perform();
+		return obterTexto(clickableElement);
+	}
+
+
+
+	
+	private String obterTexto(WebElement clickableElement) {
+		// TODO Auto-generated method stub
+		return clickableElement.getText();
 	}
 
 	public String obterValorCampo(By xpath) {
@@ -287,7 +319,17 @@ public abstract class BasePage {
 	public String getText(By by) {
 		// TODO Auto-generated method stub
 		return getDriver().findElement(by).getText();
+		
+		
 	}
+
+
+	
+	public String getPageTitle() {
+		return getDriver().getTitle();
+	}
+	
+	
 
 
 }

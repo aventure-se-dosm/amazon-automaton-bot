@@ -1,0 +1,1 @@
+package br.dev.marcelodeoliveira.amazonautomatonbot.pages.utils.regional.au_en;

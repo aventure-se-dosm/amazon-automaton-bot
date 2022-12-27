@@ -13,7 +13,7 @@ public class BaseTest {
 	@Before
 	public void inicializa() {
 
-		getDriver().get(CoreProperties.basePath.toString());
+		getDriver().get(CoreProperties.BASE_PATH);
 		getDriver().manage().window().setSize(new Dimension(1280, 720));
 
 	}
