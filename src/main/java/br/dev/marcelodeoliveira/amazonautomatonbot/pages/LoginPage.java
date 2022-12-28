@@ -5,18 +5,14 @@ import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.get
 import java.time.Duration;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BasePage;
-import br.dev.marcelodeoliveira.amazonautomatonbot.pages.utils.Constants;
 
 public class LoginPage extends BasePage {
 
@@ -36,9 +32,11 @@ public class LoginPage extends BasePage {
 	}
 
 	public String startLogin() {
+		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+
 		WebElement elem = getDriver().findElement(By.xpath("//*[@id='nav-signin-tooltip']"));
 		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
-				.pollingEvery(Duration.ofSeconds(2)).ignoring(NoSuchElementException.class);
+				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
 
 		fwait.until(ExpectedConditions.visibilityOf(elem));
 		moveToWebElementClick(elem);
@@ -48,19 +46,20 @@ public class LoginPage extends BasePage {
 
 	public void loginWriteUserEmail(String email)  {
 
-		escrever(userMailInput, email);
-		clicarBotao(emailLoginFormMailSendButton);
+		writeTextOnElementField(userMailInput, email);
+		clickButton(emailLoginFormMailSendButton);
 	}
 
 	public void loginWriteUserPassword(String password) {
 
-		escrever(userPasswordInput, password);
-		clicarBotao(passwordLoginFormMailSendButton);
+		writeTextOnElementField(userPasswordInput, password);
+		clickButton(passwordLoginFormMailSendButton);
 	}
 
 	public String login(String email, String password)  {
 
-//esperar pag. carregar toda!		
+//esperar pag. carregar toda!
+		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
 		loginWriteUserEmail(email);
 

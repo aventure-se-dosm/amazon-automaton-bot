@@ -17,7 +17,7 @@ public class LogoutPage extends LoginPage {
 		actions.moveToElement(getDriver().findElement(navBarLoginStatus))
 				.moveToElement(getDriver().findElement(navItemSignout)).click().build().perform();
 
-		var inviteLoginAgainLabel = obterTextoTrimado(logoutLabelInviteText);
+		var inviteLoginAgainLabel = getTrimmedText(logoutLabelInviteText);
 				
 				getDriver()
 				.findElement(logoutLabelInviteText).getText();

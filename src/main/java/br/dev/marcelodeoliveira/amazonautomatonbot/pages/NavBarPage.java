@@ -12,7 +12,7 @@ public class NavBarPage extends BasePage {
 	
 	
 	public String getNavBarStatus() {
-		return obterTexto(navBarLoginStatus);
+		return getText(navBarLoginStatus);
 	}
 	
 	
