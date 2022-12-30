@@ -2,6 +2,7 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.core;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class DriverFactory {
 
@@ -14,7 +15,10 @@ public class DriverFactory {
 	}
 	
 	private static void  setDriver() {
-		driver = new ChromeDriver();
+		
+		ChromeOptions co = new ChromeOptions();
+		co.addArguments("--disable-notifications");
+		driver = new ChromeDriver(co);
 	}
 	
 	

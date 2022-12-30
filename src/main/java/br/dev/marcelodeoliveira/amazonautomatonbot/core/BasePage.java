@@ -2,17 +2,24 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.core;
 
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.Wait;
 
 public class BasePage {
 
@@ -42,6 +49,15 @@ public class BasePage {
 
 	}
 
+	/*********
+	 * Element Presence
+	 * 
+	 * @return
+	 *********/
+	public boolean isElementPresent(By xpath) {
+		return getDriver().findElements(xpath).size() > 0;
+	}
+
 	/********* TextField and TextArea ************/
 
 	public void writeTextOnElementField(By by, String text) {
@@ -50,6 +66,8 @@ public class BasePage {
 		getDriver().findElement(by).clear();
 
 		getDriver().findElement(by).sendKeys(text);
+
+		// getDriver().switchTo().defaultContent();
 	}
 
 	public void writeTextOnElementField(String fieldId, String text) {
@@ -62,8 +80,8 @@ public class BasePage {
 
 	/********* Radio e Check ************/
 
-	public void clickOnElement(String id) {
-		getDriver().findElement(By.id(id)).click();
+	public void clickOnElement(WebElement webElement) {
+		webElement.click();
 	}
 
 	public void clickOnElement(By by) {
@@ -106,7 +124,6 @@ public class BasePage {
 		return combo.getFirstSelectedOption().getText();
 	}
 
-
 	public List<String> getAllComboOptionValues(String id) {
 
 		Select combo = new Select(getDriver().findElement(By.id(id)));
@@ -135,6 +152,10 @@ public class BasePage {
 		getDriver().findElement(By.id(id)).click();
 	}
 
+	public void clickButton(By xpath) {
+		getDriver().findElement(xpath).click();
+	}
+
 	public String getElementValue(String id) {
 		return getDriver().findElement(By.id(id)).getAttribute("value");
 	}
@@ -147,8 +168,17 @@ public class BasePage {
 
 	/********* Textos ************/
 
+	public String getElementsText(By by) {
+		var joinedElems = getDriver().findElements(by).stream().map(e -> e.getText()).filter(txt -> !txt.isEmpty())
+				.collect(Collectors.joining("\n"));
+
+		System.out.println(joinedElems);
+		return joinedElems;
+	}
+	
 	public String getText(By by) {
-		return getText(getDriver().findElement(by));
+		var joinedElems = getDriver().findElement(by).getText();
+		return joinedElems;
 	}
 
 	public String getTrimmedText(By by) {
@@ -157,6 +187,10 @@ public class BasePage {
 
 	public String getText(String id) {
 		return getText(By.id(id));
+	}
+
+	public String getText1(By xpath) {
+		return getDriver().findElement(xpath).getText();
 	}
 
 	/********* Alerts ************/
@@ -170,7 +204,7 @@ public class BasePage {
 		Alert alert = getDriver().switchTo().alert();
 		String value = alert.getText();
 		alert.accept();
-		switchToDefaultContent();
+		// switchToDefaultContent();
 		return value;
 
 	}
@@ -191,6 +225,10 @@ public class BasePage {
 
 	/********* Frames and Windows ************/
 
+	public void switchToActiveElement(By xpath) {
+		getDriver().switchTo().activeElement().findElement(xpath);
+	}
+
 	public void switchToFrame(String id) {
 		getDriver().switchTo().frame(id);
 	}
@@ -199,8 +237,12 @@ public class BasePage {
 		getDriver().switchTo().defaultContent();
 	}
 
-	public void switchToWindow(String id) {
-		getDriver().switchTo().window(id);
+	public void switchToPopUp() {
+		getDriver().switchTo().window((String) getDriver().getWindowHandles().toArray()[1]);
+	}
+
+	public void switchToWindow(int index) {
+		getDriver().switchTo().window((String) getDriver().getWindowHandles().toArray()[index]);
 	}
 
 	/********* JavaScript ************/
@@ -210,6 +252,13 @@ public class BasePage {
 		JavascriptExecutor js = (JavascriptExecutor) getDriver();
 
 		js.executeScript(jsCode, args);
+		scriptWait();
+
+	}
+
+	//// div[@class = 'a-section a-spacing-base']
+
+	public void ItemlementFormatter(By elementXpath) {
 
 	}
 
@@ -264,15 +313,14 @@ public class BasePage {
 
 	}
 
-	public void clickButton(By xpath) {
-		getDriver().findElement(xpath).click();
-
+	public String moveToWebElementAndClick(By clickableElement) {
+		return moveToWebElementAndClick(getDriver().findElement(clickableElement));
 	}
 
-
 	public String moveToWebElementAndClick(WebElement clickableElement) {
+		var clickableElementText = getText(clickableElement);
 		actions.moveToElement(clickableElement).click().perform();
-		return getText(clickableElement);
+		return clickableElementText;
 	}
 
 	private String getText(WebElement clickableElement) {
@@ -286,6 +334,35 @@ public class BasePage {
 
 	public String getPageTitle() {
 		return getDriver().getTitle();
+	}
+
+	/********* Waits ************/
+
+	public void redirectWait() {
+		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100l));
+	}
+
+	public void resultGatheringWait() {
+		getDriver().manage().timeouts().scriptTimeout(Duration.ofMinutes(1l));
+		// switchToFrame(path);
+	}
+
+	public void scriptWait() {
+		getDriver().manage().timeouts().scriptTimeout(Duration.ofSeconds(60));
+
+	}
+
+	public void waitForElements(By xpath) {
+
+		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
+				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
+
+		fwait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(xpath));
+	}
+
+	@After
+	public static void finaliza() {
+		getDriver().close();
 	}
 
 }

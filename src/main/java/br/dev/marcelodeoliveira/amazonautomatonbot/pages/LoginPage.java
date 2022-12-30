@@ -59,7 +59,8 @@ public class LoginPage extends BasePage {
 	public String login(String email, String password)  {
 
 //esperar pag. carregar toda!
-		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+		redirectWait();
+		//getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
 		loginWriteUserEmail(email);
 

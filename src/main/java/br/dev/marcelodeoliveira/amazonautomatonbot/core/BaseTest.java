@@ -14,7 +14,7 @@ public class BaseTest {
 	public void inicializa() {
 
 		getDriver().get(CoreProperties.BASE_PATH);
-		getDriver().manage().window().setSize(new Dimension(1280, 720));
+		getDriver().manage().window().setSize(new Dimension(1280, 2720));
 
 	}
 
@@ -35,9 +35,12 @@ public class BaseTest {
 
 			case HEADLESS:
 			default:
-				;
+				getDriver().quit();
+				break;
+				
 
 			}
 		}
+		
 	}
 }
