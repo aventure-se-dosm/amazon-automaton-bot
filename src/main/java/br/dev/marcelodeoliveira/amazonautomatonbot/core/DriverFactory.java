@@ -19,6 +19,7 @@ public class DriverFactory {
 		ChromeOptions co = new ChromeOptions();
 		co.addArguments("--disable-notifications");
 		driver = new ChromeDriver(co);
+		driver.manage().window().fullscreen();
 	}
 	
 	

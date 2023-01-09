@@ -1,13 +1,11 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.pages.utils;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
-
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
 import java.time.Duration;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 
 public class CssTools {
 

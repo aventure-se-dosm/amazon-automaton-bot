@@ -3,7 +3,6 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.pages;
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.By.ByXPath;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BasePage;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.utils.CssTools;
@@ -19,7 +18,7 @@ public class ZipCodePage extends BasePage {
 	By zipCodeFrame = By.xpath("//*['GLUXZipInputSection']/div");
 	By SubmitZipCodeConfirmation = By.xpath("//*[@id='GLUXZipUpdate']");
 
-	private By zipCodeError = By.xpath("//*[@id='GLUXZipError']");
+	private By zipCodeError = By.xpath("//*[@id='GLUXZipError']/*");
 
 	By ShippingAndDeliveryInformationsFrame = By.xpath("//*[@id='deliveryBlockMessage']");
 	By ShippingAndDeliveryInformationsSpans = By.xpath("//*[@id='deliveryBlockContainer']");

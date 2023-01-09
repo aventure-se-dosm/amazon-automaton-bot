@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -70,11 +69,13 @@ public class RequestItemPage extends BasePage {
 //	}
 
 	public List<WebElement> searchElement(String searchQueryText) {
+		
+		System.out.println("\n\nO valor da String passada é:\n\n" + searchQueryText);
 
 		redirectWait();
 		writeTextOnElementField(searchBar, searchQueryText);
 
-		moveToWebElementAndClick(searchButton);
+		actionMoveToWebElementAndClick(searchButton);
 
 		var relevantElements = getRelevantResults(searchQueryText.trim().toLowerCase());
 
@@ -82,10 +83,14 @@ public class RequestItemPage extends BasePage {
 
 				relevantElements.stream().map(p-> p.findElement(singlePageResultImageFramePartialXPATH)).
 				forEach(elem-> {
-						executeJS("arguments[0].style.border = arguments[1]", elem,
+						executeJS(
+								
+								"arguments[0].style.border = arguments[1]",
+								elem,
 								
 								//PQP! a ordem dos fatores altera o produto! Em css!
-								"solid 4px fuchsia");
+								"solid 4px fuchsia"
+						);
 			
 						scriptWait();
 					}
@@ -117,8 +122,8 @@ public class RequestItemPage extends BasePage {
 //		Predicate<WebElement> startsWithKeyword = welem -> welem.findElement(singlePageResultTitlesPartialXPATH).getText()
 //				.toLowerCase().trim().contains(searchQueryWithTrimAndCaseLowered.split(" ")[0]);
 
-		Predicate<WebElement> isRelevant = welem -> welem.findElement(singlePageResultTitlesPartialXPATH).getText()
-				.toLowerCase().trim().startsWith(searchQueryWithTrimAndCaseLowered.split(" ")[0]);
+//		Predicate<WebElement> isRelevant = welem -> welem.findElement(singlePageResultTitlesPartialXPATH).getText()
+//				.toLowerCase().trim().startsWith(searchQueryWithTrimAndCaseLowered.split(" ")[0]);
 
 		
 		// List<WebElement> results =

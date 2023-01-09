@@ -3,9 +3,13 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.core;
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.killDriver;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 
 public class BaseTest {
 	
@@ -14,10 +18,12 @@ public class BaseTest {
 	public void inicializa() {
 
 		getDriver().get(CoreProperties.BASE_PATH);
-		getDriver().manage().window().setSize(new Dimension(1280, 2720));
+		getDriver().manage().window().fullscreen();
+		
+		
 
+	
 	}
-
 	@After
 	public void finaliza() {
 		if (getDriver() != null) {

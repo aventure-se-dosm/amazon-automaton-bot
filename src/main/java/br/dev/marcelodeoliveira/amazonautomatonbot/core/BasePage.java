@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.openqa.selenium.Alert;
@@ -27,7 +26,7 @@ public class BasePage {
 	protected Actions actions;
 
 	protected By navLinkAccountList = By.xpath("//*[@id='nav-link-accountList']");
-	protected By navBarLoginStatus = By.xpath("//*[@id='nav-link-accountList-nav-line-1']");
+	protected By navBarLoginStatus = By.xpath("//*[@id='nav-link-accountList-nav-line-1']/..");
 	protected By navFlyOut = By.xpath("//*[@id='nav-flyout-accountList']");
 	protected By logoutListElement = By.xpath("//*[@id='nav-item-signout']/*[.='Sair da conta']");
 	protected By navItemSignout = By.xpath("//*[@id='nav-item-signout']");
@@ -41,13 +40,13 @@ public class BasePage {
 		return actions;
 	}
 
-	@Before
-	public void startDriver() {
-
-		getDriver().get(CoreProperties.BASE_PATH.toString());
-		// getDriver().manage().window().setSize(new Dimension(1366, 796));
-
-	}
+//	@Before
+//	public void startDriver() {
+//
+//		getDriver().get(CoreProperties.BASE_PATH.toString());
+//		// getDriver().manage().window().setSize(new Dimension(1366, 796));
+//
+//	}
 
 	/*********
 	 * Element Presence
@@ -236,6 +235,8 @@ public class BasePage {
 	public void switchToDefaultContent() {
 		getDriver().switchTo().defaultContent();
 	}
+	
+	
 
 	public void switchToPopUp() {
 		getDriver().switchTo().window((String) getDriver().getWindowHandles().toArray()[1]);
@@ -313,11 +314,11 @@ public class BasePage {
 
 	}
 
-	public String moveToWebElementAndClick(By clickableElement) {
-		return moveToWebElementAndClick(getDriver().findElement(clickableElement));
+	public String actionMoveToWebElementAndClick(By clickableElement) {
+		return actionMoveToWebElementAndClick(getDriver().findElement(clickableElement));
 	}
 
-	public String moveToWebElementAndClick(WebElement clickableElement) {
+	public String actionMoveToWebElementAndClick(WebElement clickableElement) {
 		var clickableElementText = getText(clickableElement);
 		actions.moveToElement(clickableElement).click().perform();
 		return clickableElementText;
@@ -347,6 +348,13 @@ public class BasePage {
 		// switchToFrame(path);
 	}
 
+	
+	public void implicityWaitOf(Duration duration) {
+		getDriver().manage().timeouts().implicitlyWait(duration);
+		// switchToFrame(path);
+	}
+
+	
 	public void scriptWait() {
 		getDriver().manage().timeouts().scriptTimeout(Duration.ofSeconds(60));
 
@@ -358,11 +366,30 @@ public class BasePage {
 				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
 
 		fwait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(xpath));
+		
 	}
+	
+	public void waitForElement(By xpath) {
 
-	@After
-	public static void finaliza() {
-		getDriver().close();
+		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
+				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
+
+		fwait.until(ExpectedConditions.presenceOfElementLocated(xpath));
+		
 	}
+	
+	public void waitForElementAndClick(By xpath) {
+
+		waitForElement(xpath);		
+		
+		getDriver().findElement(xpath).click();
+	}
+	
+	
+
+//	@After
+//	public static void finaliza() {
+//		getDriver().close();
+//	}
 
 }

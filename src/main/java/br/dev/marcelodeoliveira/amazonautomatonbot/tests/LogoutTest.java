@@ -52,10 +52,14 @@ public class LogoutTest extends BaseTest {
 		// actualResults = new String[] { actualTestPart01, actualTestPart02, };
 
 		// [1]. fazer um hover até o 'Olá, automaton';
+		
 
-		actualResults = page.logout();
+			page.redirectWait();
+			page.logout();
 
-		Assert.assertArrayEquals(expectedResults, actualResults);
+		
+			actualResults = page.logout();
+			Assert.assertArrayEquals(expectedResults, actualResults);
 
 	}
 
