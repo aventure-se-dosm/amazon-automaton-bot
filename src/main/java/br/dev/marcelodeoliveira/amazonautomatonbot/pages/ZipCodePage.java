@@ -2,6 +2,8 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.pages;
 
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BasePage;
@@ -18,7 +20,8 @@ public class ZipCodePage extends BasePage {
 	By zipCodeFrame = By.xpath("//*['GLUXZipInputSection']/div");
 	By SubmitZipCodeConfirmation = By.xpath("//*[@id='GLUXZipUpdate']");
 
-	private By zipCodeError = By.xpath("//*[@id='GLUXZipError']/*");
+	private By zipCodeError = By.xpath("//*[@id='GLUXZipError']");
+	private By zipCodeErrorMessage = By.xpath("//*[@id='GLUXZipError']/div/div/div");
 
 	By ShippingAndDeliveryInformationsFrame = By.xpath("//*[@id='deliveryBlockMessage']");
 	By ShippingAndDeliveryInformationsSpans = By.xpath("//*[@id='deliveryBlockContainer']");
@@ -37,8 +40,9 @@ public class ZipCodePage extends BasePage {
 		clickButton(selectZipCodeLink);
 		//redirectWait();
 		scriptWait();
+		redirectWait();
 
-		// switchToPopUp();
+		
 		waitForElements(SubmitZipCodeConfirmation);
 
 		// smelling like a cadaver! make a zipcode dedicaated method in some utils
@@ -47,12 +51,14 @@ public class ZipCodePage extends BasePage {
 		writeTextOnElementField(BrazilianZipCodePreffix, zipCode.substring(0, 5));
 		writeTextOnElementField(BrazilianZipCodeSuffix, zipCode.substring(6, zipCode.length()));
 		clickButton(SubmitZipCodeConfirmation);
-		// switchToDefaultContent();
-		scriptWait();
-		redirectWait();
+		//switchToDefaultContent();
 
-		return isZipCodeInvalid();
 
+		var txt = isZipCodeInvalid();
+
+	
+		
+		return txt;
 	}
 
 	public String getDeliveryInfos() {
@@ -61,12 +67,30 @@ public class ZipCodePage extends BasePage {
 
 		cssTools.webElementHighlight(ShippingAndDeliveryInformationsFrame);
 
-		//scriptWait();
+		scriptWait();
 
 		return infos;
 	}
 
 	public String isZipCodeInvalid() {
-		return getDriver().findElement(zipCodeError).getText();
+//		scriptWait();
+//		redirectWait();
+
+		String text = "";
+		waitForElement(zipCodeError);
+	//	getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+		if (isElementDisplayed(zipCodeErrorMessage)) {
+			text += getText(zipCodeErrorMessage);
+			
+		}
+		text += getElementValue(zipCodeErrorMessage);
+	
+		return text;
+	}
+
+	public void killDriver() {
+		// TODO Auto-generated method stub
+		killDriver();
+		
 	}
 }

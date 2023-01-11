@@ -2,10 +2,7 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.pages;
 
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
-import java.awt.AWTException;
 import java.awt.Point;
-import java.awt.Robot;
-import java.awt.event.InputEvent;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -20,9 +17,18 @@ public class LogoutPage extends LoginPage {
 	}
 
 	public String[] logout() {
-		actions.moveToElement(getDriver().findElement(navBarLoginStatus))
-				.moveToElement(getDriver().findElement(navItemSignout)).click().build().perform();
+		
+		var hoverMenu = getDriver().findElement(navBarLoginStatus);
+		var signOutButton = getDriver().findElement(navItemSignout);
+		
+		
+		actions.moveToElement(hoverMenu)
+				.moveToElement(signOutButton)
+					.click().build().perform();
 
+		
+		redirectWait();
+		scriptWait();
 		var inviteLoginAgainLabel = getTrimmedText(logoutLabelInviteText);
 				
 				getDriver()
@@ -36,7 +42,6 @@ public class LogoutPage extends LoginPage {
 				logoutResultPageShortURL,
 				getPageTitle(),
 				inviteLoginAgainLabel,
-	// label[contains(text(), 'E-mail ou número de telefone celular')]
 		};
 
 	}

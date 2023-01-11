@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -76,6 +77,9 @@ public class RequestItemPage extends BasePage {
 		writeTextOnElementField(searchBar, searchQueryText);
 
 		actionMoveToWebElementAndClick(searchButton);
+		
+		scriptWait();
+		redirectWait();
 
 		var relevantElements = getRelevantResults(searchQueryText.trim().toLowerCase());
 
@@ -105,10 +109,7 @@ public class RequestItemPage extends BasePage {
 
 	}
 
-//	@Before
-//	private void inicializa() {
-//		redirectWait();
-//	}
+
 
 	private List<WebElement> getRelevantResults(String searchQuery) {
 

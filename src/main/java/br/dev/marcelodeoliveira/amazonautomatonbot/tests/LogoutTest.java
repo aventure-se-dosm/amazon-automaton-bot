@@ -43,21 +43,19 @@ public class LogoutTest extends BaseTest {
 		// Alterar as constrantes: definir a mensagem como contatenação de properties
 		// por region!
 
-		// var actualTestPart01 =
+		 var actualTestPart01 =
 		page.startLogin();
 
-		//getDriver().switchTo().defaultContent();
-		// var actualTestPart02 =
+		 var actualTestPart02 =
 		page.login(TestProperties.getUserEmail(), TestProperties.getUserPassword());
-		// actualResults = new String[] { actualTestPart01, actualTestPart02, };
+		 actualResults = new String[] { actualTestPart01, actualTestPart02, };
 
 		// [1]. fazer um hover até o 'Olá, automaton';
 		
 
 			page.redirectWait();
-			page.logout();
 
-		
+
 			actualResults = page.logout();
 			Assert.assertArrayEquals(expectedResults, actualResults);
 

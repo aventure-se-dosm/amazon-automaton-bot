@@ -20,16 +20,21 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 
+import br.dev.marcelodeoliveira.amazonautomatonbot.utils.ConversionUtils;
+import io.netty.handler.timeout.TimeoutException;
+
 public class BasePage {
 
 	protected String path;
 	protected Actions actions;
 
 	protected By navLinkAccountList = By.xpath("//*[@id='nav-link-accountList']");
-	protected By navBarLoginStatus = By.xpath("//*[@id='nav-link-accountList-nav-line-1']/..");
+	protected By navBarLoginStatus = By.xpath("//*[@id='nav-link-accountList-nav-line-1']");
 	protected By navFlyOut = By.xpath("//*[@id='nav-flyout-accountList']");
 	protected By logoutListElement = By.xpath("//*[@id='nav-item-signout']/*[.='Sair da conta']");
 	protected By navItemSignout = By.xpath("//*[@id='nav-item-signout']");
+	
+	protected ConversionUtils conversionUtils = new ConversionUtils();
 
 	protected BasePage() {
 		this.path = CoreProperties.BASE_PATH;
@@ -55,6 +60,10 @@ public class BasePage {
 	 *********/
 	public boolean isElementPresent(By xpath) {
 		return getDriver().findElements(xpath).size() > 0;
+	}
+	
+	public boolean isElementDisplayed (By xpath){//*[@id='GLUXZipError']//i/following-sibling::*vi(By xpath) {
+		return getDriver().findElement(xpath).isDisplayed();
 	}
 
 	/********* TextField and TextArea ************/
@@ -107,6 +116,13 @@ public class BasePage {
 		combo.selectByVisibleText(value);
 
 	}
+	
+	public void selectCombo(By by, String value) {
+		WebElement element = getDriver().findElement(by);
+		Select combo = new Select(element);
+		combo.selectByVisibleText(value);
+
+	}
 
 	public void deselectCombo(By xpath, String... values) {
 
@@ -155,8 +171,8 @@ public class BasePage {
 		getDriver().findElement(xpath).click();
 	}
 
-	public String getElementValue(String id) {
-		return getDriver().findElement(By.id(id)).getAttribute("value");
+	public String getElementValue(By by) {
+		return getDriver().findElement(by).getAttribute("text");
 	}
 
 	/********* Link ************/
@@ -378,6 +394,15 @@ public class BasePage {
 		
 	}
 	
+	public void waitForElementVisibility(By xpath) {
+
+		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(2))
+				.pollingEvery(Duration.ofMillis(250)).ignoring(TimeoutException.class);
+
+		//fwait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
+		
+	}
+	
 	public void waitForElementAndClick(By xpath) {
 
 		waitForElement(xpath);		
@@ -387,9 +412,6 @@ public class BasePage {
 	
 	
 
-//	@After
-//	public static void finaliza() {
-//		getDriver().close();
-//	}
+
 
 }

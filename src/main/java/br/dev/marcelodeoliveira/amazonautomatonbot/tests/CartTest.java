@@ -1,12 +1,17 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.tests;
 
+
+
+import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.closeDriver;
+
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.By;
+import org.junit.jupiter.api.AfterEach;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BaseTest;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.CartPage;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.RequestItemPage;
+
 
 public class CartTest extends BaseTest {
 
@@ -72,11 +77,12 @@ public class CartTest extends BaseTest {
 
 	}
 
+	@Test
 	public void increaseItemsOnCartTest() {
 
 		
 		//read from xsl[0008 - ... ] test
-		var item = "Iphone 14";
+		var item = "prego";
 		String quantity = "4";
 		
 		
@@ -97,12 +103,24 @@ public class CartTest extends BaseTest {
 
 		firstItemResult.click();
 
-		cartPage.addToCart();
+
+		var itemPrice = cartPage.addToCart();
+		
+		//var precoInicial = cartPage.getItemPrice();
 
 		if (cartPage.isExtendedWarrantyOffered()) {
 
 			cartPage.declineExtendedWarrantyOffer();
 		}
+		
+		cartPage.checkCart();
+		
+		
+		
+		Assert.assertTrue(cartPage.changeQuantityTo(quantity));
+		
+		//
+		Assert.assertEquals(itemPrice*integerQuantity, cartPage.getItemNumericalItemPrice(integerQuantity), 2);
 
 	}
 
@@ -136,9 +154,16 @@ public class CartTest extends BaseTest {
 
 		cartPage.redirectWait();
 		// bad smell! put it in a dictionary on later refactoring.
+		
+		
 
 		Assert.assertTrue(cartPage.getUrl(), cartPage.getUrl().startsWith("https://www.amazon.com.br/ap/signin?"));
 
+	}
+	
+	@AfterEach
+	public void closeTestWindow() {
+		closeDriver();
 	}
 
 }
