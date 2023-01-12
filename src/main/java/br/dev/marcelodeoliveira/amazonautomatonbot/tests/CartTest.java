@@ -1,27 +1,26 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.tests;
 
-
-
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.closeDriver;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BaseTest;
+import br.dev.marcelodeoliveira.amazonautomatonbot.core.CoreProperties;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.CartPage;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.RequestItemPage;
-
-
 public class CartTest extends BaseTest {
 
 	private CartPage cartPage = new CartPage();
 
 	private RequestItemPage requestPage = new RequestItemPage();
 
-	private void addToCart(String item) {
+	private String addItemToCart(String item) {
 
-		//String item = "Iphone 14";
+		// String item = "Iphone 14";
 
 		/**
 		 * IMPORTANTE:
@@ -33,46 +32,57 @@ public class CartTest extends BaseTest {
 		 * normalmente.
 		 */
 
-
 		var firstItemResult = requestPage.searchElement(item).get(0);
 
-		
 		
 		firstItemResult.click();
 		
 		cartPage.redirectWait();
 		cartPage.scriptWait();
+		//a url tá certa
+		var afterclickProductPage = cartPage.getUrl();
+		System.out.println(afterclickProductPage);
 
 		cartPage.addToCart();
 
-		if (cartPage.isExtendedWarrantyOffered()) {
+	
+		cartPage.checkCart();
 
-			cartPage.declineExtendedWarrantyOffer();
-		}
+		return afterclickProductPage;
+
+		
 
 	}
-	
 
 	@Test
 	public void addToCartTest() {
 
 		String item = "Iphone 14";
-		addToCart(item);
+		var prodUrl = addItemToCart(item);
 		
-		//fazer a asserção!
-
+		//cartPage.checkCart();
+		
+		//getItemUrlCode
+		var onCartItemUrl = cartPage.getItemUrlOnTheCart();
+		onCartItemUrl = onCartItemUrl.replace(CoreProperties.BASE_PATH+"/gp/product/", "");
+		onCartItemUrl = onCartItemUrl.substring(0, onCartItemUrl.indexOf('/'));
+		// fazer a asserção!
+		Assert.assertTrue(onCartItemUrl, prodUrl.contains(onCartItemUrl));
 	}
-	
+
 	@Test
-	public void addToCartTestTwoTImes() {
+	public void addTwoItemsToCartTest() {
 
 		final int quantitdade2itens = 2;
-		
+
 		String item1 = "fogão";
-		addToCart(item1);
-		addToCart(item1);
-		cartPage.checkCart();
-	
+		String item2 = "geladeira";
+		addItemToCart(item1);
+		cartPage.redirectWait();
+		cartPage.scriptWait();
+		addItemToCart(item2);
+		//cartPage.checkCart();
+
 		Assert.assertEquals(quantitdade2itens, cartPage.getTotalItems());
 
 	}
@@ -80,13 +90,11 @@ public class CartTest extends BaseTest {
 	@Test
 	public void increaseItemsOnCartTest() {
 
-		
-		//read from xsl[0008 - ... ] test
+		// read from xsl[0008 - ... ] test
 		var item = "prego";
 		String quantity = "4";
-		
-		
-		//converter
+
+		// converter
 		var integerQuantity = Integer.parseInt(quantity);
 
 		/**
@@ -103,24 +111,21 @@ public class CartTest extends BaseTest {
 
 		firstItemResult.click();
 
+		var itemPrice = cartPage.addToCartAndReturnNumericPrice();
 
-		var itemPrice = cartPage.addToCart();
-		
-		//var precoInicial = cartPage.getItemPrice();
+		// var precoInicial = cartPage.getItemPrice();
 
 		if (cartPage.isExtendedWarrantyOffered()) {
 
 			cartPage.declineExtendedWarrantyOffer();
 		}
-		
-		cartPage.checkCart();
-		
-		
-		
+
+		//cartPage.checkCart();
+
 		Assert.assertTrue(cartPage.changeQuantityTo(quantity));
-		
+
 		//
-		Assert.assertEquals(itemPrice*integerQuantity, cartPage.getItemNumericalItemPrice(integerQuantity), 2);
+		Assert.assertEquals(itemPrice * integerQuantity, cartPage.getItemNumericalItemPrice(integerQuantity), 2);
 
 	}
 
@@ -154,16 +159,24 @@ public class CartTest extends BaseTest {
 
 		cartPage.redirectWait();
 		// bad smell! put it in a dictionary on later refactoring.
-		
-		
 
 		Assert.assertTrue(cartPage.getUrl(), cartPage.getUrl().startsWith("https://www.amazon.com.br/ap/signin?"));
 
 	}
 	
-	@AfterEach
-	public void closeTestWindow() {
-		closeDriver();
+	
+	@Ignore
+	@Test
+	public void addItemThenRemoveItAndVerifyEmptyCartTest(){
+		String item = "Iphone 14";
+		var itemTitle = addItemToCart(item);
+		//cartPage.checkCart();
+		//cartPage.removeFromCart();
+		
+		
 	}
+	
+	
+
 
 }

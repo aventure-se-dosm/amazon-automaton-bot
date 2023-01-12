@@ -69,6 +69,28 @@ public class RequestItemPage extends BasePage {
 //		
 //	}
 
+	
+	private void highlightElements (List<WebElement> welemList) {
+		// formatar
+
+		welemList.stream().map(p-> p.findElement(singlePageResultImageFramePartialXPATH)).
+		forEach(elem-> {
+				executeJS(
+						
+						"arguments[0].style.border = arguments[1]",
+						elem,
+						
+						//PQP! a ordem dos fatores altera o produto! Em css!
+						"solid 4px fuchsia"
+				);
+	
+				scriptWait();
+			}
+		);
+		
+		scriptWait();
+
+	}
 	public List<WebElement> searchElement(String searchQueryText) {
 		
 		System.out.println("\n\nO valor da String passada é:\n\n" + searchQueryText);
@@ -83,27 +105,27 @@ public class RequestItemPage extends BasePage {
 
 		var relevantElements = getRelevantResults(searchQueryText.trim().toLowerCase());
 
-		// formatar
+	//	highlightElements(relevantElements);
+		//System.out.println(relevantElements.get(2).getText());
+	//	System.out.println(elem.toString());
 
-				relevantElements.stream().map(p-> p.findElement(singlePageResultImageFramePartialXPATH)).
-				forEach(elem-> {
-						executeJS(
-								
-								"arguments[0].style.border = arguments[1]",
-								elem,
-								
-								//PQP! a ordem dos fatores altera o produto! Em css!
-								"solid 4px fuchsia"
-						);
-			
-						scriptWait();
-					}
-				);
+			//	clickOnElement(selectAddressLink);
+		
+		return relevantElements;
 
+	}
+
+	public List<WebElement> searchAndHighlighElements(String searchQueryText) {
+		
+		var relevantElements = searchElement(searchQueryText);
+		redirectWait();
+		highlightElements(relevantElements);
 		//System.out.println(relevantElements.get(2).getText());
 	//	System.out.println(elem.toString());
 
 				//clickOnElement(selectAddressLink);
+		
+		
 		
 		return relevantElements;
 
@@ -140,58 +162,6 @@ public class RequestItemPage extends BasePage {
 
 		return l;
 	}
-
-	private Integer validarItem(String searchQuery) {
-
-		// redirectWait();
-		/**
-		 * ***ESTRATÉGIAS DE COMPARAÇÃO E VALIDAÇÃO***
-		 * 
-		 * Objetivo: tornar mais acurado, relevante e consequente- mente mais elástico o
-		 * conjunto de resultados validados para a aplicação com a adoção de
-		 * metodologias simples.
-		 * 
-		 * 
-		 * 
-		 * [1]. Insensível a Caixa;
-		 * 
-		 * [a]. Por carência de suporta a XPATH 2.0 o suporte aos novos métodos
-		 * lower-case(), upper-case(), bem como ao matches() a validação de relevância
-		 * deve ser feita internamente, com implementação rápida (Stream sugerida)
-		 * 
-		 * [2]. Insensível a Diacritização (a implementar)
-		 * 
-		 * [3]. Haverão duas Strings para valores esperados, no qual apenas uma é
-		 * suficiente para que o teste passe:
-		 * 
-		 * [a]. nonSpacedExpectedItemString: aglutinação dos termos pela eliminação de
-		 * caracteres conotadores de separação.
-		 *
-		 * [i]. A princípio: serão man- tidos apenas letras e dígitos.
-		 * 
-		 * [b]. spacedExpectedItemString palavras separadas por caracter de espaço;
-		 * 
-		 * [i] Palavras com Maiúsculas em seu interior;
-		 * 
-		 * [2] Palavras com traços, pontos médios, operador menos, travessões e
-		 * undescores os terão substituídos por ' ' (espaço).
-		 *
-		 * 
-		 *
-		 *
-		 * [c]. Tentar comparação em curto circuito: a primeira string a ser comparada
-		 * com o valor esperado será nonSpacedExpectedItemString. Caso o teste passe,
-		 * SpacedExpectedItemString não será utilizada (ou nem gerada para teste).
-		 * 
-		 * 
-		 * 
-		 */
-
-		var relevantItemsQuantity = 3;
-		return relevantItemsQuantity;
-	}
-
-
 
 
 

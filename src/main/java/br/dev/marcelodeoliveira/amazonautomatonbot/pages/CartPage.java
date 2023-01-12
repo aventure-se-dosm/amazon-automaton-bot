@@ -7,6 +7,8 @@ import java.time.Duration;
 import org.openqa.selenium.By;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BasePage;
+import br.dev.marcelodeoliveira.amazonautomatonbot.core.CoreProperties;
+import br.dev.marcelodeoliveira.amazonautomatonbot.core.dtos.DTOItem;
 
 public class CartPage extends BasePage {
 
@@ -28,32 +30,86 @@ public class CartPage extends BasePage {
 	private By subtotal1 = By.xpath("//*[@id='sc-subtotal-label-activecart']");
 	private By subtotal2 = By.xpath("//*[@id='sc-subtotal-label-buybox']");
 	private By checkCartButton = By.xpath("//*[@id='sw-gtc']//a");
+	private By checkCartButton2 = By.xpath("//*[@id='submit.add-to-cart']");
 
 	private By onlyOneForItemMessage = By.xpath("//*[@data-feature-id='single-imb-message']");
 	private By selectItemQuantity = By.xpath("//select[@id='quantity']");
 
 	private By popovercontent = By.xpath("//*[contains(@id, 'popover-content')]");
 
+	private By singleItemOnCart = By.xpath("//span[@class='a-list-item']/a[contains(@href, 'gp/product')]");
 	private By fullPrice = By.xpath("//*[@id='sc-subtotal-amount-activecart']");
-	
+
 	private By currencySymbol = By.xpath("//span[@class='a-price-symbol']");
+	
+	
+	
+	private By dtoItemTitle =By.xpath("//*[@id='productTitle']");
+
+	
+	
+	
+	
 	private By integerItemPrice = By.xpath("//span[@class='a-price-whole']");
 
 	private By fractionaryItemPrice = By.xpath("//span[@class='a-price-fraction']");
 
-	private float getFractionalUnityByTen () {
-		//return (float)Math.pow(10, getText(fractionaryItemPrice).length());
-		return (float)Math.pow(10, 2);
-	}
-	
-	
-	
-	public float addToCart() {
-		clickOnElement(addToCartButton);
-		// obter preço do ítem (produto vezes quantidade)
+	private By cartItemTitles = By.xpath("//span[@class='a-truncate-full a-offscreen']");
 
+	private float getFractionalUnityByTen() {
+		// return (float)Math.pow(10, getText(fractionaryItemPrice).length());
+		return (float) Math.pow(10, 2);
+	}
+
+	private float getNumericPrice () {
 		return conversionUtils.strToFLoatTest(getText(integerItemPrice).replaceAll(".,", ""),
 				getText(fractionaryItemPrice));
+	}
+	
+	//return itemInfos
+	
+	private String getItemTitle() {
+		return getElementsText(dtoItemTitle);
+		
+	}
+	
+	private String getItemUrlId() {
+		var onCartItemUrl = getUrl()
+				.replace(CoreProperties.BASE_PATH+"/gp/product/", "");
+
+		
+		return onCartItemUrl.substring(0, onCartItemUrl.indexOf('/'));
+	}
+	
+	public DTOItem addToCart() {
+		var url = getItemUrlId();
+		
+		clickOnElement(addToCartButton);
+		
+		if (isExtendedWarrantyOffered()) {
+
+			declineExtendedWarrantyOffer();
+		}
+
+		//var url = getItemUrlId();
+		// obter preço do ítem (produto vezes quantidade)
+		checkCart();
+		
+		return new DTOItem(url, getItemTitle(), getNumericPrice());
+	}
+	
+	public float addToCartAndReturnNumericPrice() {
+		addToCart();
+		// obter preço do ítem (produto vezes quantidade)
+
+		return getNumericPrice();
+	}
+	
+	public float addToCartAndReturnItemTitle() {
+		addToCart();
+		// obter preço do ítem (produto vezes quantidade)
+
+		return getNumericPrice();
 	}
 
 	public boolean isExtendedWarrantyOffered() {
@@ -108,24 +164,49 @@ public class CartPage extends BasePage {
 		}
 
 		return true;
-		
-		
 
 	}
 
 	public float getItemNumericalItemPrice() {
 		// TODO Auto-generated method stub
-		return conversionUtils.strToFLoatTest(
-				getText(integerItemPrice).replaceAll(".,", ""),
-				getText(fractionaryItemPrice)
-		);
+		return conversionUtils.strToFLoatTest(getText(integerItemPrice).replaceAll(".,", ""),
+				getText(fractionaryItemPrice));
 	}
 
 	public float getItemNumericalItemPrice(float quantity) {
 		// TODO Auto-generated method stub
-		return quantity * Float.valueOf(getText(fullPrice).replaceAll("[^\\d]", ""))/getFractionalUnityByTen();
+		return quantity * Float.valueOf(getText(fullPrice).replaceAll("[^\\d]", "")) / getFractionalUnityByTen();
 	}
-	
-	
+
+	public String getItemUrlOnTheCart() {
+		return getElementAttribute(singleItemOnCart, "href");
+	}
+
+	public void removeFromCart(String itemTitle) {
+
+		/*
+		 * Objetivo: gerar o xpath do elemento a ser excluido da lista.
+		 * 
+		 * 
+		 * Isso exige a captura do título <h2> do ítem que será utili- zado na
+		 * construção do valor da classe "aria-label" do ele- mentoto clicável de
+		 * exclusão de tipo <input>.
+		 * 
+		 * 
+		 * 
+		 */
+		
+		
+
+		// input[contains(@aria-label, 'Berimbau e outros poemas') and
+		// @data-action='delete']
+
+		var xpath = By.xpath("//input[contains(@aria-label, '" + itemTitle + "') and @data-action='delete']");
+		clickButton(xpath);
+
+		// input[contains(@aria-label, 'Berimbau e outros poemas') and
+		// @data-action='delete']
+
+	}
 
 }

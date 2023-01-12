@@ -24,12 +24,12 @@ public class RequestItemsTest extends BaseTest {
 	@Test
 	public void RequestValidItemOnSearchBar() {
 
-		String searchQueryString = "Bicicleta Aro 29";
+		String searchQueryString = "Bicicleta";
 
-		var relevantItems = requestItemPage.searchElement(searchQueryString);
+		var relevantItems = requestItemPage.searchAndHighlighElements(searchQueryString);
 		requestItemPage.redirectWait();
 		requestItemPage.resultGatheringWait();
-		System.out.println(relevantItems);
+		System.out.println(relevantItems.size());
 		Assert.assertTrue(relevantItems.size() > 0);
 
 		/**

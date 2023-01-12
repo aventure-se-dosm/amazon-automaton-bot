@@ -6,8 +6,10 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -173,6 +175,10 @@ public class BasePage {
 
 	public String getElementValue(By by) {
 		return getDriver().findElement(by).getAttribute("text");
+	}
+	
+	public String getElementAttribute(By by, String attribute) {
+		return getDriver().findElement(by).getAttribute(attribute);
 	}
 
 	/********* Link ************/
@@ -356,11 +362,11 @@ public class BasePage {
 	/********* Waits ************/
 
 	public void redirectWait() {
-		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100l));
+		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100L));
 	}
 
 	public void resultGatheringWait() {
-		getDriver().manage().timeouts().scriptTimeout(Duration.ofMinutes(1l));
+		getDriver().manage().timeouts().scriptTimeout(Duration.ofMinutes(1L));
 		// switchToFrame(path);
 	}
 
@@ -410,6 +416,10 @@ public class BasePage {
 		getDriver().findElement(xpath).click();
 	}
 	
+//	@AfterEach
+//	public static void finaliza() {
+//		DriverFactory.closeDriver();
+//	}
 	
 
 

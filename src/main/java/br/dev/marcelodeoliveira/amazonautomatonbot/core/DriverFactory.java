@@ -14,7 +14,7 @@ public class DriverFactory {
 		return (driver == null);
 	}
 	
-	private static void  setDriver() {
+	static void  setDriver() {
 		
 		ChromeOptions co = new ChromeOptions();
 		co.addArguments("--disable-notifications");
