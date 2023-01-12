@@ -18,7 +18,7 @@ public class CoreProperties {
 	
 	public static Browsers defaultBrowser = Browsers.CHROME;
 
-	public static ExecutionModes defaultExecutionMode = ExecutionModes.SINGLE_WINDOW;
+	public static ExecutionModes defaultExecutionMode = ExecutionModes.ONE_WINDOW_PER_TEST;
 
 	public static final String BASE_PATH = "https://www.amazon.com.br";
 	

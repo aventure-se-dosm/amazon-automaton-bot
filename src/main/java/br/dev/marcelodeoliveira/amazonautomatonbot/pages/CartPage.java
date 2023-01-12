@@ -4,6 +4,7 @@ import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.get
 
 import java.time.Duration;
 
+import org.junit.After;
 import org.openqa.selenium.By;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BasePage;
@@ -41,70 +42,76 @@ public class CartPage extends BasePage {
 	private By fullPrice = By.xpath("//*[@id='sc-subtotal-amount-activecart']");
 
 	private By currencySymbol = By.xpath("//span[@class='a-price-symbol']");
-	
-	
-	
-	private By dtoItemTitle =By.xpath("//*[@id='productTitle']");
 
-	
-	
-	
-	
+	private By dtoItemTitle = By.xpath("//*[@id='productTitle']");
+
 	private By integerItemPrice = By.xpath("//span[@class='a-price-whole']");
 
 	private By fractionaryItemPrice = By.xpath("//span[@class='a-price-fraction']");
 
 	private By cartItemTitles = By.xpath("//span[@class='a-truncate-full a-offscreen']");
 
+	private final String replaceItemString = "_-_REPLACE_ITEM_STRING_ON_THIS_SPACE_-_";
+	private String removeItemFromCartByXpathString = "%s";
+
 	private float getFractionalUnityByTen() {
 		// return (float)Math.pow(10, getText(fractionaryItemPrice).length());
-		return (float) Math.pow(10, 2);
+		// return (float) Math.pow(10, 2);
+
+		return 100;
 	}
 
-	private float getNumericPrice () {
+	public float getNumericPrice() {
 		return conversionUtils.strToFLoatTest(getText(integerItemPrice).replaceAll(".,", ""),
 				getText(fractionaryItemPrice));
 	}
-	
-	//return itemInfos
-	
+
+	// return itemInfos
+
 	private String getItemTitle() {
 		return getElementsText(dtoItemTitle);
-		
-	}
-	
-	private String getItemUrlId() {
-		var onCartItemUrl = getUrl()
-				.replace(CoreProperties.BASE_PATH+"/gp/product/", "");
 
-		
+	}
+
+	private String getItemUrlId() {
+		var onCartItemUrl = getUrl().replace(CoreProperties.BASE_PATH + "/gp/product/", "");
+
 		return onCartItemUrl.substring(0, onCartItemUrl.indexOf('/'));
 	}
-	
-	public DTOItem addToCart() {
-		var url = getItemUrlId();
-		
+
+	public String[] addToCart() {
+		var url = getUrl();
+		System.out.println(url);
+
 		clickOnElement(addToCartButton);
-		
+
 		if (isExtendedWarrantyOffered()) {
 
 			declineExtendedWarrantyOffer();
 		}
 
-		//var url = getItemUrlId();
+		// var url = getItemUrlId();
 		// obter preço do ítem (produto vezes quantidade)
 		checkCart();
-		
-		return new DTOItem(url, getItemTitle(), getNumericPrice());
+
+		System.out.println();
+		var split = url.split("/");
+		System.out.println(split[5]);
+
+		scriptWait();
+		redirectWait();
+		return split;
+		// return new DTOItem(url, getItemTitle(), getNumericPrice());
+
 	}
-	
+
 	public float addToCartAndReturnNumericPrice() {
 		addToCart();
 		// obter preço do ítem (produto vezes quantidade)
 
 		return getNumericPrice();
 	}
-	
+
 	public float addToCartAndReturnItemTitle() {
 		addToCart();
 		// obter preço do ítem (produto vezes quantidade)
@@ -175,14 +182,14 @@ public class CartPage extends BasePage {
 
 	public float getItemNumericalItemPrice(float quantity) {
 		// TODO Auto-generated method stub
-		return quantity * Float.valueOf(getText(fullPrice).replaceAll("[^\\d]", "")) / getFractionalUnityByTen();
+		return quantity * (Float.valueOf(getText(fullPrice).replaceAll("[^\\d]", ""))) / getFractionalUnityByTen();
 	}
 
 	public String getItemUrlOnTheCart() {
 		return getElementAttribute(singleItemOnCart, "href");
 	}
 
-	public void removeFromCart(String itemTitle) {
+	public String[] removeFromCart(String urlProdId) {
 
 		/*
 		 * Objetivo: gerar o xpath do elemento a ser excluido da lista.
@@ -195,18 +202,22 @@ public class CartPage extends BasePage {
 		 * 
 		 * 
 		 */
-		
-		
 
 		// input[contains(@aria-label, 'Berimbau e outros poemas') and
 		// @data-action='delete']
 
-		var xpath = By.xpath("//input[contains(@aria-label, '" + itemTitle + "') and @data-action='delete']");
-		clickButton(xpath);
+		var itemFrame = getDriver().findElement(By.xpath("//div[@class='sc-item-content-group']"));
 
-		// input[contains(@aria-label, 'Berimbau e outros poemas') and
-		// @data-action='delete']
+		var link = itemFrame.findElement(By.xpath(".//a[contains(@href,'" + urlProdId + "')]")).getAttribute("href");
 
+		var excludeItemButton = itemFrame.findElement(By.xpath(".//input[ @data-action='delete']"));
+
+		var title = itemFrame.findElement(By.xpath(".//span[@class='a-truncate-full a-offscreen']")).getText();
+		;
+
+		clickOnElement(excludeItemButton);
+
+		return new String[] { link, title, };
 	}
 
 }

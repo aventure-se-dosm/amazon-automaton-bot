@@ -3,6 +3,8 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.core;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
 
 public class DriverFactory {
 
@@ -18,8 +20,16 @@ public class DriverFactory {
 		
 		ChromeOptions co = new ChromeOptions();
 		co.addArguments("--disable-notifications");
+		co.setCapability("intl.accept_languages", "language");
 		driver = new ChromeDriver(co);
 		driver.manage().window().fullscreen();
+
+		
+		
+		
+		
+		
+		
 	}
 	
 	

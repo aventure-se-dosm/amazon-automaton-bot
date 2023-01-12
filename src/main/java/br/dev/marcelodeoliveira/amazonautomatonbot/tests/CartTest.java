@@ -1,24 +1,22 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.tests;
 
-import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.closeDriver;
-
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
+import org.openqa.selenium.By;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BaseTest;
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.CoreProperties;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.CartPage;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.RequestItemPage;
+
 public class CartTest extends BaseTest {
 
 	private CartPage cartPage = new CartPage();
 
 	private RequestItemPage requestPage = new RequestItemPage();
 
-	private String addItemToCart(String item) {
+	private String getFirstFoundItem(String item) {
 
 		// String item = "Iphone 14";
 
@@ -32,25 +30,24 @@ public class CartTest extends BaseTest {
 		 * normalmente.
 		 */
 
-		var firstItemResult = requestPage.searchElement(item).get(0);
+	//	var firstItemResult = requestPage.searchAndGatherItems(item).get(0);
+		var firstItemResult = requestPage.searchAndGatherItems(item).get(0);
 
-		
 		firstItemResult.click();
-		
+
+		System.out.println("\n\nLink do Ítem antes de sua adição ao carrinho: \n\n\t" + cartPage.getUrl() + "\n\n\n");
+
 		cartPage.redirectWait();
 		cartPage.scriptWait();
-		//a url tá certa
-		var afterclickProductPage = cartPage.getUrl();
-		System.out.println(afterclickProductPage);
 
-		cartPage.addToCart();
+		// a url ANTES da adição ao carrinho!
+		var beforeCartAddingkProductPage = cartPage.getUrl();
 
-	
-		cartPage.checkCart();
+		// cartPage.addToCart();
 
-		return afterclickProductPage;
+		// cartPage.checkCart();
 
-		
+		return beforeCartAddingkProductPage;
 
 	}
 
@@ -58,7 +55,9 @@ public class CartTest extends BaseTest {
 	public void addToCartTest() {
 
 		String item = "Iphone 14";
-		var prodUrl = addItemToCart(item);
+		var prodUrl = getFirstFoundItem(item);
+		cartPage.addToCart();
+		
 		
 		//cartPage.checkCart();
 		
@@ -75,13 +74,16 @@ public class CartTest extends BaseTest {
 
 		final int quantitdade2itens = 2;
 
-		String item1 = "fogão";
 		String item2 = "geladeira";
-		addItemToCart(item1);
-		cartPage.redirectWait();
-		cartPage.scriptWait();
-		addItemToCart(item2);
-		//cartPage.checkCart();
+		String item1 = "fogo";
+
+		getFirstFoundItem(item1);
+		cartPage.addToCart();
+//		cartPage.redirectWait();
+//		cartPage.scriptWait();
+		getFirstFoundItem(item2);
+		cartPage.addToCart();
+		// cartPage.checkCart();
 
 		Assert.assertEquals(quantitdade2itens, cartPage.getTotalItems());
 
@@ -107,32 +109,36 @@ public class CartTest extends BaseTest {
 		 * normalmente.
 		 */
 
-		var firstItemResult = requestPage.searchElement(item).get(0);
-
+		var firstItemResult = requestPage.searchAndGatherItems(item).get(0);
+		cartPage.resultGatheringWait();
 		firstItemResult.click();
 
-		var itemPrice = cartPage.addToCartAndReturnNumericPrice();
+		// var itemPrice = cartPage.addToCartAndReturnNumericPrice();
 
-		// var precoInicial = cartPage.getItemPrice();
+		var precoInicial = cartPage.getNumericPrice();
+		cartPage.addToCart();
 
 		if (cartPage.isExtendedWarrantyOffered()) {
 
 			cartPage.declineExtendedWarrantyOffer();
 		}
 
-		//cartPage.checkCart();
+		// cartPage.checkCart();
 
 		Assert.assertTrue(cartPage.changeQuantityTo(quantity));
 
 		//
-		Assert.assertEquals(itemPrice * integerQuantity, cartPage.getItemNumericalItemPrice(integerQuantity), 2);
+		Assert.assertEquals(precoInicial * integerQuantity, cartPage.getItemNumericalItemPrice(integerQuantity), 2);
 
 	}
 
+	@Ignore
 	@Test
 	public void addToCartAndLoginRedirectionTest() {
 
 		String item = "Iphone 14";
+		getFirstFoundItem(item);
+		cartPage.addToCart();
 
 		/**
 		 * IMPORTANTE:
@@ -144,39 +150,63 @@ public class CartTest extends BaseTest {
 		 * normalmente.
 		 */
 
-		var firstItemResult = requestPage.searchElement(item).get(0);
-
-		firstItemResult.click();
-
-		cartPage.addToCart();
-
-		if (cartPage.isExtendedWarrantyOffered()) {
-
-			cartPage.declineExtendedWarrantyOffer();
-		}
-
-		cartPage.finishOrder();
+////		var firstItemResult = requestPage.searchAndGatherItems(item).get(0);
+////
+////		firstItemResult.click();
+////
+////		cartPage.addToCart();
+////
+////		if (cartPage.isExtendedWarrantyOffered()) {
+////
+////			cartPage.declineExtendedWarrantyOffer();
+////		}
+////
+////		cartPage.finishOrder();
+//		
+//	//	addItemThenRemoveItAndVerifyEmptyCartTest();
 
 		cartPage.redirectWait();
+		cartPage.removeFromCart(item);
 		// bad smell! put it in a dictionary on later refactoring.
 
-		Assert.assertTrue(cartPage.getUrl(), cartPage.getUrl().startsWith("https://www.amazon.com.br/ap/signin?"));
+		Assert.assertTrue(cartPage.getUrl().startsWith("https://www.amazon.com.br/ap/signin?"));
 
 	}
+
 	
-	
-	@Ignore
 	@Test
-	public void addItemThenRemoveItAndVerifyEmptyCartTest(){
+	public void addItemThenRemoveItAndVerifyEmptyCartTest() {
 		String item = "Iphone 14";
-		var itemTitle = addItemToCart(item);
-		//cartPage.checkCart();
-		//cartPage.removeFromCart();
-		
-		
+
+		var itemTitle = getFirstFoundItem(item);
+		var itemId = cartPage.addToCart();
+
+
+		cartPage.removeFromCart(itemId[5]);
+		//poderia ainda haver o assert do preço de tratamento da string de preço após a remoção! (que seja float 0.00)
+		Assert.assertTrue(cartPage.isElementDisplayed(By.xpath("//*[@class='sc-list-item-removed-msg']")));
+
 	}
 	
-	
+	@Test
+	public void addItemsRemoveOneAndVerifyItsNotPresentTest() {
+		String item1 = "Iphone 14";
+		var itemTitle1 = getFirstFoundItem(item1);
+		cartPage.addToCart();
+		
+		String item2 = "Iphone 14";
+		var itemTitle2 = getFirstFoundItem(item2);
+		cartPage.addToCart();
 
+
+		cartPage.removeFromCart("");
+		System.out.println("atestar remoção");
+		// atestar que o ítem foi removido
+		
+		
+		//poderia ainda haver o assert do preço de tratamento da string de preço após a remoção! (que seja float 0.00)
+		Assert.assertTrue(cartPage.isElementDisplayed(By.xpath("//*[@class='sc-list-item-removed-msg']")));
+
+	}
 
 }

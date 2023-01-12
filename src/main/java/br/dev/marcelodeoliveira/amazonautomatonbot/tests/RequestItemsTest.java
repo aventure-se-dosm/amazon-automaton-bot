@@ -62,7 +62,7 @@ public class RequestItemsTest extends BaseTest {
 		// ENCONTRA: QUE TAL?
 		String searchQueryString = "ITEM_INEXISTENTE_012345";
 
-		var relevantItems = requestItemPage.searchElement(searchQueryString);
+		var relevantItems = requestItemPage.searchAndGatherItems(searchQueryString);
 		requestItemPage.redirectWait();
 		requestItemPage.resultGatheringWait();
 		System.out.println(relevantItems);
@@ -105,7 +105,7 @@ public class RequestItemsTest extends BaseTest {
 
 		String searchQueryString = "frigideira";
 
-		var relevantItems = requestItemPage.searchElement(searchQueryString);
+		var relevantItems = requestItemPage.searchAndGatherItems(searchQueryString);
 		
 		requestItemPage.redirectWait();
 		requestItemPage.resultGatheringWait();
@@ -150,7 +150,7 @@ public class RequestItemsTest extends BaseTest {
 		 */
 
 		String searchQueryString = "frigideira";
-		var relevantItems = requestItemPage.searchElement(searchQueryString);
+		var relevantItems = requestItemPage.searchAndGatherItems(searchQueryString);
 
 		requestItemPage.redirectWait();
 		requestItemPage.resultGatheringWait();

@@ -26,7 +26,9 @@ public class RequestItemPage extends BasePage {
 	
 	//By singlePageResultImageFrame = By.xpath("//*[@class='a-section aok-relative s-image-square-aspect']/parent::*");
 
-	By singlePageResultTitlesPartialXPATH = By.xpath(".//*[@class='a-size-base-plus a-color-base a-text-normal']");
+//	By singlePageResultTitlesPartialXPATH = By.xpath(".//*[@class='a-size-base-plus a-color-base a-text-normal']");
+	By singlePageResultTitlesPartialXPATH = By.xpath("//*[@class='a-size-base-plus a-color-base a-text-normal']");
+
 	By singlePageResultImageFramePartialXPATH = By
 			.xpath(".//*[@class='a-section aok-relative s-image-square-aspect']/../../..");
 
@@ -91,10 +93,8 @@ public class RequestItemPage extends BasePage {
 		scriptWait();
 
 	}
-	public List<WebElement> searchElement(String searchQueryText) {
-		
-		System.out.println("\n\nO valor da String passada é:\n\n" + searchQueryText);
-
+	
+	public WebElement searchAngGatherTheFirstResultItem (String searchQueryText) {
 		redirectWait();
 		writeTextOnElementField(searchBar, searchQueryText);
 
@@ -102,22 +102,52 @@ public class RequestItemPage extends BasePage {
 		
 		scriptWait();
 		redirectWait();
+		
+		
+		
+		return null;
+	}
+	
+	private void startSearch (String searchQueryString) {
+		System.out.println("\n\nO valor da String passada é:\n\n" + searchQueryString);
 
+		redirectWait();
+		writeTextOnElementField(searchBar, searchQueryString);
+
+		actionMoveToWebElementAndClick(searchButton);
+		
+		scriptWait();
+		redirectWait();
+	}
+	
+	private List<WebElement> searchAndGatherItems(String searchQueryText, boolean highLight) {
+		
+		startSearch(searchQueryText);
 		var relevantElements = getRelevantResults(searchQueryText.trim().toLowerCase());
 
-	//	highlightElements(relevantElements);
-		//System.out.println(relevantElements.get(2).getText());
-	//	System.out.println(elem.toString());
+		if (highLight)highlightElements(relevantElements);
 
-			//	clickOnElement(selectAddressLink);
+		//clickOnElement(selectAddressLink);
 		
 		return relevantElements;
+
+	}
+	
+	public List<WebElement> searchAndGatherItems(String searchQueryText) {
+		
+		return searchAndGatherItems(searchQueryText, false);
+
+	}
+	
+	public List<WebElement> searchAndGatherItemsAndHighlightResults(String searchQueryText) {
+		
+		return searchAndGatherItems(searchQueryText, true);
 
 	}
 
 	public List<WebElement> searchAndHighlighElements(String searchQueryText) {
 		
-		var relevantElements = searchElement(searchQueryText);
+		var relevantElements = searchAndGatherItems(searchQueryText);
 		redirectWait();
 		highlightElements(relevantElements);
 		//System.out.println(relevantElements.get(2).getText());
@@ -139,6 +169,8 @@ public class RequestItemPage extends BasePage {
 		
 
 		var searchQueryWithTrimAndCaseLowered = searchQuery.trim().toLowerCase();
+		
+		
 		Predicate<WebElement> containsExactMatch = welem -> welem.findElement(singlePageResultTitlesPartialXPATH).getText()
 				.toLowerCase().trim().contains(searchQueryWithTrimAndCaseLowered);
 		

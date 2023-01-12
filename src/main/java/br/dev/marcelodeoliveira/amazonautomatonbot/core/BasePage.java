@@ -96,6 +96,8 @@ public class BasePage {
 
 	public void clickOnElement(By by) {
 		getDriver().findElement(by).click();
+		scriptWait();
+		redirectWait();
 	}
 
 	public boolean isRadioChecked(String id) {
@@ -415,6 +417,12 @@ public class BasePage {
 		
 		getDriver().findElement(xpath).click();
 	}
+	
+	/********* url ************/
+	
+	
+	
+	
 	
 //	@AfterEach
 //	public static void finaliza() {

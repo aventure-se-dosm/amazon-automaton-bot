@@ -36,12 +36,14 @@ public class BaseTest {
 
 			case ONE_WINDOW_PER_TEST: {
 				//closeDriver();
-				killDriver();;
+				killDriver();
+				
 				break;
 			}
 
 			case SINGLE_WINDOW: {
-				killDriver();
+				closeDriver();
+				//killDriver();
 				break;
 			}
 
