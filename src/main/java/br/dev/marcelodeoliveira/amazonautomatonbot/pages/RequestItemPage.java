@@ -108,7 +108,7 @@ public class RequestItemPage extends BasePage {
 		return null;
 	}
 	
-	private void startSearch (String searchQueryString) {
+	public void startSearch (String searchQueryString) {
 		System.out.println("\n\nO valor da String passada é:\n\n" + searchQueryString);
 
 		redirectWait();
@@ -170,8 +170,8 @@ public class RequestItemPage extends BasePage {
 
 		var searchQueryWithTrimAndCaseLowered = searchQuery.trim().toLowerCase();
 		
-		
-		Predicate<WebElement> containsExactMatch = welem -> welem.findElement(singlePageResultTitlesPartialXPATH).getText()
+		//new String(tmp.getBytes(Charset.forName("utf-8")));
+		Predicate<WebElement> containsExactMatch = welem -> getElementsText(welem.findElement(singlePageResultTitlesPartialXPATH))
 				.toLowerCase().trim().contains(searchQueryWithTrimAndCaseLowered);
 		
 //		Predicate<WebElement> startsWithKeyword = welem -> welem.findElement(singlePageResultTitlesPartialXPATH).getText()

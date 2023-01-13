@@ -2,28 +2,28 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.core;
 
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.utils.ConversionUtils;
-import io.netty.handler.timeout.TimeoutException;
 
 public class BasePage {
 
@@ -38,6 +38,7 @@ public class BasePage {
 	
 	protected ConversionUtils conversionUtils = new ConversionUtils();
 
+	private JavascriptExecutor js; 
 	protected BasePage() {
 		this.path = CoreProperties.BASE_PATH;
 		this.actions = new Actions(getDriver());
@@ -199,9 +200,35 @@ public class BasePage {
 		return joinedElems;
 	}
 	
+	protected List<WebElement> getWebElements(By by) {
+		return getDriver().findElements(by);
+	}
+	
+	protected WebElement getWebElement(By by) {
+		return getDriver().findElement(by);
+	}
+	
+	public String getElementsText(WebElement elem) {
+		return getText(elem); 
+//
+//		System.out.println(text);
+		// return new String(rawText.getBytes(Charset.forName("utf-8");
+	}
+	
 	public String getText(By by) {
-		var joinedElems = getDriver().findElement(by).getText();
-		return joinedElems;
+		return getElementsText(getDriver().findElement(by));
+		/**
+		 * Código encontrado na internet:
+		 * 
+		 * 	Fonte:
+		 * 
+		 * 		https://stackoverflow.com/questions
+		 * 		/16913972/selenium-web-driver-and-multillanguage
+		 * 		/24449050#24449050
+		 * 
+		 * new String(tmp.getBytes(Charset.forName("utf-8")));
+		 */
+		//return new String(rawText.getBytes(Charset.forName("utf-8")));
 	}
 
 	public String getTrimmedText(By by) {
@@ -274,12 +301,32 @@ public class BasePage {
 
 	public void executeJS(String jsCode, Object... args) {
 
-		JavascriptExecutor js = (JavascriptExecutor) getDriver();
-
+		
+		js = (JavascriptExecutor) getDriver();
 		js.executeScript(jsCode, args);
-		scriptWait();
+		
 
 	}
+	
+	
+
+	public void scrollIntoView(WebElement welem) {
+//		executeJS("window.scrollBy(0, arguments[0]);", elemVerticalPosition);
+		executeJS("(arguments[0]).scrollIntoView();", welem);
+
+	}
+	
+	public void scrollIntoView(By by) {
+//		executeJS("window.scrollBy(0, arguments[0]);", elemVerticalPosition);
+		scrollIntoView(getWebElement(by));
+
+	}
+	
+//	public void scrollVertically(int elemVerticalPosition) {
+////		executeJS("window.scrollBy(0, arguments[0]);", elemVerticalPosition);
+//		executeJS("arguments[0].scrollIntoView();", elemVerticalPosition);
+//
+//	}
 
 	//// div[@class = 'a-section a-spacing-base']
 
@@ -349,7 +396,9 @@ public class BasePage {
 	}
 
 	private String getText(WebElement clickableElement) {
-		return clickableElement.getText();
+		
+		//return clickableElement.getText();
+		return  new String(clickableElement.getText().getBytes(Charset.forName("utf-8")));
 	}
 
 	public String getFieldValue(By xpath) {
@@ -393,7 +442,7 @@ public class BasePage {
 		
 	}
 	
-	public void waitForElement(By xpath) {
+	public void waitForElementPresence(By xpath) {
 
 		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
 				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
@@ -402,22 +451,71 @@ public class BasePage {
 		
 	}
 	
-	public void waitForElementVisibility(By xpath) {
+	public Wait<WebDriver> fluentWait() {
+		
+		return fluentWait(Duration.ofSeconds(2), Duration.ofMillis(250), new TimeoutException());
+				
+	}
+	
+	public  <E extends Exception> Wait<WebDriver> fluentWait(E... e) {
 
-		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(2))
-				.pollingEvery(Duration.ofMillis(250)).ignoring(TimeoutException.class);
 
-		//fwait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
+		//smell: set both defaut timeout and pollig times on a propertu file!
+		return fluentWait(Duration.ofSeconds(2), Duration.ofMillis(250), e);
+		
+		//wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));	
 		
 	}
 	
+	public  <E extends Exception> Wait<WebDriver> fluentWait(Duration timeOut, Duration pollingTime, E... e) {
+
+		return new FluentWait<>(getDriver()).withTimeout(timeOut)
+				.pollingEvery(pollingTime)
+				.ignoreAll(Stream.of(e).map(excp -> excp.getClass()).distinct().collect(Collectors.toList()));
+		//wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));	
+		
+	}
+	
+	
+	
+	public ExpectedCondition<WebElement> ElementIsVisible(By by) {
+		return ExpectedConditions.visibilityOfElementLocated(by);
+	}
+	
+	public ExpectedCondition<WebElement> ElementIsPresent(By by) {
+		return ExpectedConditions.visibilityOfElementLocated(by);
+	}
+	
+
+	
 	public void waitForElementAndClick(By xpath) {
 
-		waitForElement(xpath);		
+		waitForElementPresence(xpath);		
 		
 		getDriver().findElement(xpath).click();
 	}
 	
+	
+	public void implicityWait(Duration duration) {
+		getDriver().manage().timeouts().implicitlyWait(duration);
+	}
+	
+	public void implicityWait2(Duration duration) {
+		try {
+			getDriver().manage().window().wait(5000, 0);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void movingDivWait() {
+		
+		//BAD Smell: Put the IL time onto a page/core/which W-ever property!
+		implicityWait(Duration.ofMillis(50000));
+		
+	}
+//	
 	/********* url ************/
 	
 	

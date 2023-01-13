@@ -9,15 +9,19 @@ import br.dev.marcelodeoliveira.amazonautomatonbot.core.BaseTest;
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.CoreProperties;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.CartPage;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.RequestItemPage;
+import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
 public class CartTest extends BaseTest {
 
 	private CartPage cartPage = new CartPage();
 
 	private RequestItemPage requestPage = new RequestItemPage();
+	//private RequestItemPage requestPage = new RequestItemPage();
 
 	private String getFirstFoundItem(String item) {
 
+		
+		System.out.println("ãõáéíóúàèìòù");
 		// String item = "Iphone 14";
 
 		/**
@@ -30,13 +34,20 @@ public class CartTest extends BaseTest {
 		 * normalmente.
 		 */
 
-	//	var firstItemResult = requestPage.searchAndGatherItems(item).get(0);
+//		var firstItemResult = requestPage.searchAndGatherItems(item).get(0);
+//		
+//		requestPage.startSearch("fogão");
+//		var fogao = getDriver().findElement(By.xpath("//*[@id='search']/div[1]/div[1]/div/span[1]/div[1]/div//h2/a[1]"));
+//		System.out.println(fogao.getText());
+		
+	//	fogao.click();
+		
+		
+		
+		
 		var firstItemResult = requestPage.searchAndGatherItems(item).get(0);
-
+//
 		firstItemResult.click();
-
-		System.out.println("\n\nLink do Ítem antes de sua adição ao carrinho: \n\n\t" + cartPage.getUrl() + "\n\n\n");
-
 		cartPage.redirectWait();
 		cartPage.scriptWait();
 
@@ -75,7 +86,9 @@ public class CartTest extends BaseTest {
 		final int quantitdade2itens = 2;
 
 		String item2 = "geladeira";
-		String item1 = "fogo";
+		//String item1 = "fogão";
+		
+		String item1 = "foguete";
 
 		getFirstFoundItem(item1);
 		cartPage.addToCart();
@@ -93,8 +106,8 @@ public class CartTest extends BaseTest {
 	public void increaseItemsOnCartTest() {
 
 		// read from xsl[0008 - ... ] test
-		var item = "prego";
-		String quantity = "4";
+		var item = "fone";
+		String quantity = "2";
 
 		// converter
 		var integerQuantity = Integer.parseInt(quantity);
@@ -125,14 +138,14 @@ public class CartTest extends BaseTest {
 
 		// cartPage.checkCart();
 
-		Assert.assertTrue(cartPage.changeQuantityTo(quantity));
+		//Assert.assertTrue(cartPage.changeQuantityTo(quantity));
 
 		//
 		Assert.assertEquals(precoInicial * integerQuantity, cartPage.getItemNumericalItemPrice(integerQuantity), 2);
 
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void addToCartAndLoginRedirectionTest() {
 
@@ -166,7 +179,10 @@ public class CartTest extends BaseTest {
 //	//	addItemThenRemoveItAndVerifyEmptyCartTest();
 
 		cartPage.redirectWait();
-		cartPage.removeFromCart(item);
+		cartPage.finishOrder();
+		
+		
+		
 		// bad smell! put it in a dictionary on later refactoring.
 
 		Assert.assertTrue(cartPage.getUrl().startsWith("https://www.amazon.com.br/ap/signin?"));

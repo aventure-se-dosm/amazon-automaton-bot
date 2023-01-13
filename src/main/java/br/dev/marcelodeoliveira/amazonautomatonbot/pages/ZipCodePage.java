@@ -77,7 +77,7 @@ public class ZipCodePage extends BasePage {
 //		redirectWait();
 
 		String text = "";
-		waitForElement(zipCodeError);
+		waitForElementPresence(zipCodeError);
 	//	getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
 		if (isElementDisplayed(zipCodeErrorMessage)) {
 			text += getText(zipCodeErrorMessage);

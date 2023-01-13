@@ -25,7 +25,8 @@ public class BaseTest {
 	public void inicializa() {
 
 		getDriver().get(CoreProperties.BASE_PATH);
-		getDriver().manage().window().setSize(new Dimension(1280, 2720));
+		//getDriver().manage().window().setSize(new Dimension(1280, 2720));
+		//getDriver().manage().timeouts().implicitlyWait(Duration.ofMillis(750));
 
 	}
 
@@ -34,6 +35,7 @@ public class BaseTest {
 		if (getDriver() != null) {
 			switch (CoreProperties.defaultExecutionMode) {
 
+			
 			case ONE_WINDOW_PER_TEST: {
 				//closeDriver();
 				killDriver();
@@ -48,9 +50,11 @@ public class BaseTest {
 			}
 
 			case HEADLESS:
-			default:
 				closeDriver();
-
+				break;
+			
+			default:
+			;
 			}
 			
 			

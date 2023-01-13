@@ -23,7 +23,7 @@ public class LoginTest extends BaseTest {
 	}
 
 	@Test
-	public void loginTest()  {
+	public void loginTest() {
 
 		String[] expectedResults, actualResults;
 
@@ -32,9 +32,9 @@ public class LoginTest extends BaseTest {
 
 		// Alterar as constrantes: definir a mensagem como contatenação de properties
 		// por region!
-		actualResults = new String[] {
-			page.startLogin(),
-			page.login(TestProperties.getUserEmail(), TestProperties.getUserPassword())
+		actualResults = new String[] { page.startLogin(),
+
+				page.login(TestProperties.getUserEmail(), TestProperties.getUserPassword())
 
 		};
 		Assert.assertArrayEquals(expectedResults, actualResults);

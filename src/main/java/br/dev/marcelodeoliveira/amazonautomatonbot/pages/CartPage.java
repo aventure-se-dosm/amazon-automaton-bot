@@ -162,9 +162,13 @@ public class CartPage extends BasePage {
 	}
 
 	public boolean changeQuantityTo(String quantityString) {
+
+		redirectWait();
+		scriptWait();
+		
 		selectCombo(selectItemQuantity, quantityString);
 
-		if (isElementPresent(onlyOneForItemMessage))
+		if (isElementDisplayed(onlyOneForItemMessage))
 		// the quantity did't change
 		{
 			return false;

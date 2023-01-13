@@ -10,19 +10,19 @@ import org.junit.runners.Suite.SuiteClasses;
 import br.dev.marcelodeoliveira.amazonautomatonbot.tests.LoginTest;
 import br.dev.marcelodeoliveira.amazonautomatonbot.tests.LogoutTest;;
 
-@RunWith(Suite.class)
-@SuiteClasses(
-		{ 
-			LoginTest.class,
-			LogoutTest.class,
-		}
-)
-
-public class SuiteTest {
-
-	@AfterClass
-	public void finaliza() {
-		killDriver();
-	}
-
-}
+//@RunWith(Suite.class)
+//@SuiteClasses(
+//		{ 
+//			LoginTest.class,
+//			LogoutTest.class,
+//		}
+//)
+//
+//public class SuiteTest {
+//
+//	@AfterClass
+//	public void finaliza() {
+//		killDriver();
+//	}
+//
+//}

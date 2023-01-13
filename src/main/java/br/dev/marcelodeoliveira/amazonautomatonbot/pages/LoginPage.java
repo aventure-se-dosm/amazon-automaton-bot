@@ -34,6 +34,10 @@ public class LoginPage extends BasePage {
 	public String startLogin() {
 		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
+		redirectWait();
+		scriptWait();
+		
+		
 		WebElement elem = getDriver().findElement(By.xpath("//*[@id='nav-signin-tooltip']"));
 		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
 				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);

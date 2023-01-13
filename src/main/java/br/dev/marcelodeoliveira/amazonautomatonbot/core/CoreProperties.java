@@ -10,7 +10,7 @@ public class CoreProperties {
 
 	public static enum ExecutionModes {
 
-		SINGLE_WINDOW, ONE_WINDOW_PER_TEST, HEADLESS
+		SINGLE_WINDOW, ONE_WINDOW_PER_TEST, HEADLESS, NONE
 	}
 	
 	public static Countries SELECTED_COUNTRY = Countries.Brazil;
@@ -18,7 +18,7 @@ public class CoreProperties {
 	
 	public static Browsers defaultBrowser = Browsers.CHROME;
 
-	public static ExecutionModes defaultExecutionMode = ExecutionModes.ONE_WINDOW_PER_TEST;
+	public static ExecutionModes defaultExecutionMode = ExecutionModes.NONE;
 
 	public static final String BASE_PATH = "https://www.amazon.com.br";
 	

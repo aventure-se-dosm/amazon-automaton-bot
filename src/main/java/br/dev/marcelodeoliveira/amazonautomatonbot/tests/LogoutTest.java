@@ -48,15 +48,23 @@ public class LogoutTest extends BaseTest {
 
 		 var actualTestPart02 =
 		page.login(TestProperties.getUserEmail(), TestProperties.getUserPassword());
+		
+		 
 		 actualResults = new String[] { actualTestPart01, actualTestPart02, };
 
 		// [1]. fazer um hover até o 'Olá, automaton';
 		
 
 			page.redirectWait();
+			page.scriptWait();
 
 
 			actualResults = page.logout();
+			
+			page.redirectWait();
+			page.scriptWait();
+			
+			
 			Assert.assertArrayEquals(expectedResults, actualResults);
 
 	}
