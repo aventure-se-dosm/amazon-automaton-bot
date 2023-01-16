@@ -38,9 +38,9 @@ public class ItemDepartmentPage extends BasePage {
 
 	private void openAllVisibleSeeMoreExpanderButton() {
 
-		var divWait = fluentWait(Duration.ofSeconds(30), Duration.ofMillis(250));
-
-		divWait.until(ExpectedConditions.elementToBeClickable(expandItemButtons));
+//		var divWait = fluentWait(Duration.ofSeconds(30), Duration.ofMillis(250));
+//
+//		divWait.until(ExpectedConditions.elementToBeClickable(expandItemButtons));
 
 		var expandButtons = getWebElements(expandItemButtons);
 

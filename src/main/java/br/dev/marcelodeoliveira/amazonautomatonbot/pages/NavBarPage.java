@@ -1,5 +1,7 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.pages;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BasePage;
@@ -12,8 +14,16 @@ public class NavBarPage extends BasePage {
 	
 	
 	public String getNavBarStatus() {
+		
+		implicityWait(Duration.ZERO);
+		try {
 		waitForElementPresence(navBarLoginStatus);
 		return getText(navBarLoginStatus);
+		} catch (Exception e) {
+			return "";
+		}
+		
+
 	}
 	
 	

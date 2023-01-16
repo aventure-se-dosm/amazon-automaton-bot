@@ -3,6 +3,7 @@ package br.dev.marcelodeoliveira.amazonautomatonbot.pages;
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
 import java.awt.Point;
+import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -18,17 +19,22 @@ public class LogoutPage extends LoginPage {
 
 	public String[] logout() {
 		
+//		waitForElementPresence(navBarLoginStatus);
+//		waitForElementPresence(navItemSignout);
+		
+		waitForElement(navBarLoginStatus);
 		var hoverMenu = getDriver().findElement(navBarLoginStatus);
 		var signOutButton = getDriver().findElement(navItemSignout);
 		
 		
-		actions.moveToElement(hoverMenu)
-				.moveToElement(signOutButton)
+		actions.moveToElement(hoverMenu).pause(Duration.ofMillis(300))
+				.moveToElement(signOutButton).pause(Duration.ofMillis(300))
 					.click().build().perform();
 
 		
 		redirectWait();
 		scriptWait();
+		waitForElementPresence(logoutLabelInviteText);
 		var inviteLoginAgainLabel = getTrimmedText(logoutLabelInviteText);
 				
 				getDriver()

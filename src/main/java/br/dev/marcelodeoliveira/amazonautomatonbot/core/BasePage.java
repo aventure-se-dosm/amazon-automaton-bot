@@ -80,11 +80,15 @@ public class BasePage {
 
 	public void writeTextOnElementField(By by, String text) {
 		var fwait = fluentWait();
+
 		try {
-		fwait.until(ExpectedConditions.presenceOfElementLocated(by));
+			fwait.until(ExpectedConditions.presenceOfElementLocated(by));
 		} catch (Exception n) {
 			n.printStackTrace();
-			return;		}
+			return;
+		}
+
+		fwait.until(ExpectedConditions.presenceOfElementLocated(by));
 		getDriver().findElement(by).clear();
 
 		getDriver().findElement(by).sendKeys(text);
@@ -93,7 +97,7 @@ public class BasePage {
 	}
 
 	public void writeTextOnElementField(String fieldId, String text) {
-		var fwait = fluentWait();
+
 		writeTextOnElementField(By.id(fieldId), text);
 	}
 
@@ -116,7 +120,7 @@ public class BasePage {
 
 	public void clickOnElement(By by) {
 		clickOnElement(getDriver().findElement(by));
-	
+
 	}
 
 	public boolean isRadioChecked(String id) {
@@ -223,6 +227,7 @@ public class BasePage {
 	}
 
 	protected WebElement getWebElement(By by) {
+		waitForElement(by);
 		return getDriver().findElement(by);
 	}
 
@@ -323,8 +328,9 @@ public class BasePage {
 
 	public void highlightElements(List<WebElement> welemList) {
 		// formatar
-		if(welemList.isEmpty()) return;
-		
+		if (welemList.isEmpty())
+			return;
+
 		welemList.stream().forEach(elem -> {
 			executeJS(
 
@@ -337,7 +343,7 @@ public class BasePage {
 		});
 
 		scriptWait();
-		
+
 		scrollIntoView(welemList.get(0));
 
 	}
@@ -468,11 +474,11 @@ public class BasePage {
 	/********* Waits ************/
 
 	public void redirectWait() {
-		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100L));
+		// getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100L));
 	}
 
 	public void resultGatheringWait() {
-		getDriver().manage().timeouts().scriptTimeout(Duration.ofMinutes(1L));
+		// getDriver().manage().timeouts().scriptTimeout(Duration.ofMinutes(1L));
 		// switchToFrame(path);
 	}
 
@@ -497,22 +503,50 @@ public class BasePage {
 		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
 				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
 
-		fwait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(xpath));
+
+
+	}
+
+	public void waitForElement(By xpath) {
+
+		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
+				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
+
+//		fwait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(xpath));
+		//fwait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
 
 	}
 
 	public void waitForElementPresence(By xpath) {
 
-		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
+		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(2))
 				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
 
-		fwait.until(ExpectedConditions.presenceOfElementLocated(xpath));
+		try {
+			fwait.until(ExpectedConditions.presenceOfElementLocated(xpath));
+			fwait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
+		} catch (TimeoutException t) {
+			t.printStackTrace();
+		}
+
+	}
+
+	public void waitForElementPresenceThenContinue(By xpath) {
+		try {
+			Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(1))
+					.pollingEvery(Duration.ofMillis(250)).ignoring(Exception.class);
+
+			fwait.until(ExpectedConditions.presenceOfElementLocated(xpath));
+
+		} catch (Exception e) {
+			return;
+		}
 
 	}
 
 	public Wait<WebDriver> fluentWait() {
 
-		return fluentWait(Duration.ofSeconds(3), Duration.ofMillis(250), new TimeoutException());
+		return fluentWait(Duration.ofSeconds(4), Duration.ofMillis(250), new TimeoutException());
 
 	}
 
@@ -543,12 +577,10 @@ public class BasePage {
 
 	public void waitForElementAndClick(By xpath) {
 
-		waitForElementPresence(xpath);
+		implicityWait(Duration.ofSeconds(3));
 
 		getDriver().findElement(xpath).click();
 	}
-	
-	
 
 	public void implicityWait(Duration duration) {
 		getDriver().manage().timeouts().implicitlyWait(duration);
@@ -567,7 +599,7 @@ public class BasePage {
 
 		// BAD Smell: Put the IL time onto a page/core/which W-ever property!
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

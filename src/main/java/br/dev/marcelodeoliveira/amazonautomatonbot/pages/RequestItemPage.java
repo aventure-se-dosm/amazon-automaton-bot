@@ -39,6 +39,7 @@ public class RequestItemPage extends BasePage {
 	By selectZipCodeLink = By.xpath("//*[id='contextualIngressPtLabel_deliveryShortLine']");
 	By BrazilianZipCodePreffix = By.xpath ("//*[@id='GLUXZipUpdateInput_0']");
 	By BrazilianZipCodeSuffix = By.xpath ("//*[@id='GLUXZipUpdateInput_1']");
+//	By SubmitZipCodeConfirmation = By.xpath("//*[@id='GLUXZipUpdate']/..");
 	By SubmitZipCodeConfirmation = By.xpath("//*[@id='GLUXZipUpdate']/..");
 	
 //	@Override
@@ -51,7 +52,7 @@ public class RequestItemPage extends BasePage {
 	
 	
 	public void selectZipCode() {
-		clickOnElement(selectZipCodeLink);	
+		waitForElementAndClick(selectZipCodeLink);	
 	}
 	
 //	public void addZipCode (String zipCode) {
@@ -102,6 +103,7 @@ public class RequestItemPage extends BasePage {
 	private List<WebElement> searchAndGatherItems(String searchQueryText, boolean highLight) {
 		
 		startSearch(searchQueryText);
+		
 		var relevantElements = getRelevantResults(searchQueryText.trim().toLowerCase());
 
 		if (highLight)highlightElements(relevantElements);
@@ -164,9 +166,12 @@ public class RequestItemPage extends BasePage {
 		// getDriver().findElements(singlePageResultFrames).stream().filter(isTitleRelevant).collect(Collectors.toList());
 
 		
+		waitForElements(singlePageResultImageFramePartialXPATH);
 		
 		var l = getDriver().findElements(singlePageResultFrames).stream().filter(containsExactMatch)
 				.collect(Collectors.toList());
+		
+		
 
 		redirectWait();
 

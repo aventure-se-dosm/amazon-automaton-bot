@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.rules.TestName;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -25,6 +26,9 @@ public class BaseTest {
 	@Rule
 	public TestName tname = new TestName();
 
+	
+
+	
 	@Before
 	public void inicializa() {
 		

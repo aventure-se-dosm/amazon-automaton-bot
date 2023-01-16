@@ -13,12 +13,14 @@ public class ZipCodePage extends BasePage {
 	public ZipCodePage() {
 		super();
 	}
+	
+	
 
 	By selectZipCodeLink = By.xpath("//*[@id='contextualIngressPtLabel_deliveryShortLine']");
 	By BrazilianZipCodePreffix = By.xpath("//*[@id='GLUXZipUpdateInput_0']");
 	By BrazilianZipCodeSuffix = By.xpath("//*[@id='GLUXZipUpdateInput_1']");
 	By zipCodeFrame = By.xpath("//*['GLUXZipInputSection']/div");
-	By SubmitZipCodeConfirmation = By.xpath("//*[@id='GLUXZipUpdate']");
+	By SubmitZipCodeConfirmation = By.xpath("//*[@id='GLUXZipUpdate']/..");
 
 	private By zipCodeError = By.xpath("//*[@id='GLUXZipError']");
 	private By zipCodeErrorMessage = By.xpath("//*[@id='GLUXZipError']/div/div/div");
@@ -37,20 +39,25 @@ public class ZipCodePage extends BasePage {
 		// must be flexible to regional implementation rules
 		// magic numbers! refine it
 		// Should'nt you validate "invalid cpf" or "cpf regex match" cases?
-		clickButton(selectZipCodeLink);
+		waitForElementAndClick(selectZipCodeLink);
 		//redirectWait();
 		scriptWait();
+		
 		redirectWait();
 
 		
-		waitForElements(SubmitZipCodeConfirmation);
+		waitForElementPresenceThenContinue(SubmitZipCodeConfirmation);
 
 		// smelling like a cadaver! make a zipcode dedicaated method in some utils
 		// package!
 		// seizing the localization packs as well!
 		writeTextOnElementField(BrazilianZipCodePreffix, zipCode.substring(0, 5));
 		writeTextOnElementField(BrazilianZipCodeSuffix, zipCode.substring(6, zipCode.length()));
-		clickButton(SubmitZipCodeConfirmation);
+		movingDivWait();
+		scriptWait();
+		switchToDefaultContent();
+		waitForElementAndClick(SubmitZipCodeConfirmation);
+		//clickButton(SubmitZipCodeConfirmation);
 		//switchToDefaultContent();
 
 
@@ -79,12 +86,13 @@ public class ZipCodePage extends BasePage {
 		String text = "";
 		waitForElementPresence(zipCodeError);
 	//	getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
-		if (isElementDisplayed(zipCodeErrorMessage)) {
+		if (isElementPresent(zipCodeErrorMessage)) {
 			text += getText(zipCodeErrorMessage);
 			
-		}
+		
+		
 		text += getElementValue(zipCodeErrorMessage);
-	
+	}
 		return text;
 	}
 

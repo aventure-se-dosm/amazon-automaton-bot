@@ -25,7 +25,9 @@ public class LoginPage extends BasePage {
 	protected By userPasswordInput = By.xpath("//input[@id='ap_password']");
 
 	protected NavBarPage navBarPage = new NavBarPage();
-
+	
+	protected By capchaTextField = By.xpath("//input[@id='auth-captcha-guess']");
+//	protected By SubmitButton = By.xpath("//*[@id='signInSubmit']");
 	public LoginPage() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -38,15 +40,15 @@ public class LoginPage extends BasePage {
 		scriptWait();
 		
 		
-//		WebElement elem = getDriver().findElement(By.xpath("//*[@id='nav-signin-tooltip']"));
-//		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
-//				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
-//
-//		fwait.until(ExpectedConditions.visibilityOf(elem));
-//		moveToWebElementClick(elem);
+		WebElement elem = getDriver().findElement(By.xpath("//*[@id='nav-signin-tooltip']"));
+		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
+				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
+
+		fwait.until(ExpectedConditions.visibilityOf(elem));
+		moveToWebElementClick(elem);
 		
 		
-		waitForElementAndClick(By.xpath("//*[@id='nav-signin-tooltip']"));
+		//clickButton(By.xpath("//*[@id='nav-signin-tooltip']"));
 		return getPageTitle();
 
 	}
@@ -60,18 +62,26 @@ public class LoginPage extends BasePage {
 	public void loginWriteUserPassword(String password) {
 
 		writeTextOnElementField(userPasswordInput, password);
+		implicityWait(Duration.ofSeconds(1));
 		clickButton(passwordLoginFormMailSendButton);
 	}
 
 	public String login(String email, String password)  {
 
 //esperar pag. carregar toda!
-		redirectWait();
-		getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-
+		//redirectWait();
+		
+		implicityWait(Duration.ofSeconds(2));
+		
 		loginWriteUserEmail(email);
 
 		loginWriteUserPassword(password);
+		
+		//teste: passar para a lista de Byes
+		
+		
+
+		
 
 //		var expectedWelcomeMessage = navBarPage.getNavBarStatus();
 
