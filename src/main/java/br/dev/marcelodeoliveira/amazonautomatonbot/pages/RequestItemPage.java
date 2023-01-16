@@ -72,27 +72,6 @@ public class RequestItemPage extends BasePage {
 //	}
 
 	
-	private void highlightElements (List<WebElement> welemList) {
-		// formatar
-
-		welemList.stream().map(p-> p.findElement(singlePageResultImageFramePartialXPATH)).
-		forEach(elem-> {
-				executeJS(
-						
-						"arguments[0].style.border = arguments[1]",
-						elem,
-						
-						//PQP! a ordem dos fatores altera o produto! Em css!
-						"solid 4px fuchsia"
-				);
-	
-				scriptWait();
-			}
-		);
-		
-		scriptWait();
-
-	}
 	
 	public WebElement searchAngGatherTheFirstResultItem (String searchQueryText) {
 		redirectWait();

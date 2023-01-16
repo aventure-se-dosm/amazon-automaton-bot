@@ -15,6 +15,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -35,10 +36,14 @@ public class BasePage {
 	protected By navFlyOut = By.xpath("//*[@id='nav-flyout-accountList']");
 	protected By logoutListElement = By.xpath("//*[@id='nav-item-signout']/*[.='Sair da conta']");
 	protected By navItemSignout = By.xpath("//*[@id='nav-item-signout']");
-	
+
+	protected By singlePageResultPartialXPATH = By.xpath(
+			"//*[@class='a-section aok-relative s-image-square-aspect']/ancestor::div[@class='a-section a-spacing-base']");
+
 	protected ConversionUtils conversionUtils = new ConversionUtils();
 
-	private JavascriptExecutor js; 
+	private JavascriptExecutor js;
+
 	protected BasePage() {
 		this.path = CoreProperties.BASE_PATH;
 		this.actions = new Actions(getDriver());
@@ -47,6 +52,8 @@ public class BasePage {
 	public Actions getActions() {
 		return actions;
 	}
+
+	protected Wait<WebDriver> divWait = fluentWait(Duration.ofSeconds(15), Duration.ofMillis(250));
 
 //	@Before
 //	public void startDriver() {
@@ -64,16 +71,20 @@ public class BasePage {
 	public boolean isElementPresent(By xpath) {
 		return getDriver().findElements(xpath).size() > 0;
 	}
-	
-	public boolean isElementDisplayed (By xpath){//*[@id='GLUXZipError']//i/following-sibling::*vi(By xpath) {
+
+	public boolean isElementDisplayed(By xpath) {// *[@id='GLUXZipError']//i/following-sibling::*vi(By xpath) {
 		return getDriver().findElement(xpath).isDisplayed();
 	}
 
 	/********* TextField and TextArea ************/
 
 	public void writeTextOnElementField(By by, String text) {
-		// getDriver().switchTo().defaultContent();
-
+		var fwait = fluentWait();
+		try {
+		fwait.until(ExpectedConditions.presenceOfElementLocated(by));
+		} catch (Exception n) {
+			n.printStackTrace();
+			return;		}
 		getDriver().findElement(by).clear();
 
 		getDriver().findElement(by).sendKeys(text);
@@ -82,6 +93,7 @@ public class BasePage {
 	}
 
 	public void writeTextOnElementField(String fieldId, String text) {
+		var fwait = fluentWait();
 		writeTextOnElementField(By.id(fieldId), text);
 	}
 
@@ -92,13 +104,19 @@ public class BasePage {
 	/********* Radio e Check ************/
 
 	public void clickOnElement(WebElement webElement) {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		webElement.click();
 	}
 
 	public void clickOnElement(By by) {
-		getDriver().findElement(by).click();
-		scriptWait();
-		redirectWait();
+		clickOnElement(getDriver().findElement(by));
+	
 	}
 
 	public boolean isRadioChecked(String id) {
@@ -121,7 +139,7 @@ public class BasePage {
 		combo.selectByVisibleText(value);
 
 	}
-	
+
 	public void selectCombo(By by, String value) {
 		WebElement element = getDriver().findElement(by);
 		Select combo = new Select(element);
@@ -179,7 +197,7 @@ public class BasePage {
 	public String getElementValue(By by) {
 		return getDriver().findElement(by).getAttribute("text");
 	}
-	
+
 	public String getElementAttribute(By by, String attribute) {
 		return getDriver().findElement(by).getAttribute(attribute);
 	}
@@ -199,36 +217,35 @@ public class BasePage {
 		System.out.println(joinedElems);
 		return joinedElems;
 	}
-	
+
 	protected List<WebElement> getWebElements(By by) {
 		return getDriver().findElements(by);
 	}
-	
+
 	protected WebElement getWebElement(By by) {
 		return getDriver().findElement(by);
 	}
-	
+
 	public String getElementsText(WebElement elem) {
-		return getText(elem); 
+		return getText(elem);
 //
 //		System.out.println(text);
 		// return new String(rawText.getBytes(Charset.forName("utf-8");
 	}
-	
+
 	public String getText(By by) {
 		return getElementsText(getDriver().findElement(by));
 		/**
 		 * Código encontrado na internet:
 		 * 
-		 * 	Fonte:
+		 * Fonte:
 		 * 
-		 * 		https://stackoverflow.com/questions
-		 * 		/16913972/selenium-web-driver-and-multillanguage
-		 * 		/24449050#24449050
+		 * https://stackoverflow.com/questions
+		 * /16913972/selenium-web-driver-and-multillanguage /24449050#24449050
 		 * 
 		 * new String(tmp.getBytes(Charset.forName("utf-8")));
 		 */
-		//return new String(rawText.getBytes(Charset.forName("utf-8")));
+		// return new String(rawText.getBytes(Charset.forName("utf-8")));
 	}
 
 	public String getTrimmedText(By by) {
@@ -286,8 +303,6 @@ public class BasePage {
 	public void switchToDefaultContent() {
 		getDriver().switchTo().defaultContent();
 	}
-	
-	
 
 	public void switchToPopUp() {
 		getDriver().switchTo().window((String) getDriver().getWindowHandles().toArray()[1]);
@@ -301,27 +316,67 @@ public class BasePage {
 
 	public void executeJS(String jsCode, Object... args) {
 
-		
 		js = (JavascriptExecutor) getDriver();
 		js.executeScript(jsCode, args);
-		
 
 	}
-	
-	
+
+	public void highlightElements(List<WebElement> welemList) {
+		// formatar
+		if(welemList.isEmpty()) return;
+		
+		welemList.stream().forEach(elem -> {
+			executeJS(
+
+					"arguments[0].style.border = arguments[1]", elem,
+
+					// PQP! a ordem dos fatores altera o produto! Em css!
+					"solid 4px fuchsia");
+
+			scriptWait();
+		});
+
+		scriptWait();
+		
+		scrollIntoView(welemList.get(0));
+
+	}
 
 	public void scrollIntoView(WebElement welem) {
 //		executeJS("window.scrollBy(0, arguments[0]);", elemVerticalPosition);
 		executeJS("(arguments[0]).scrollIntoView();", welem);
 
 	}
-	
+
 	public void scrollIntoView(By by) {
 //		executeJS("window.scrollBy(0, arguments[0]);", elemVerticalPosition);
 		scrollIntoView(getWebElement(by));
 
 	}
-	
+
+	public void scrollIntoViewAndClick(WebElement welem) {
+
+		implicityWait(Duration.ofSeconds(2));
+
+		if (!welem.isDisplayed()) {
+			scrollIntoView(welem);
+
+			if (!welem.isDisplayed())
+				return;
+
+			divWait.until(ExpectedConditions.visibilityOfAllElements(welem));
+			welem.click();
+		}
+	}
+
+	public void scrollIntoViewAndClick(By by) {
+
+		var elems = getWebElements(by);
+		for (WebElement w : elems)
+			scrollIntoViewAndClick(w);
+
+	}
+
 //	public void scrollVertically(int elemVerticalPosition) {
 ////		executeJS("window.scrollBy(0, arguments[0]);", elemVerticalPosition);
 //		executeJS("arguments[0].scrollIntoView();", elemVerticalPosition);
@@ -396,9 +451,9 @@ public class BasePage {
 	}
 
 	private String getText(WebElement clickableElement) {
-		
-		//return clickableElement.getText();
-		return  new String(clickableElement.getText().getBytes(Charset.forName("utf-8")));
+
+		// return clickableElement.getText();
+		return new String(clickableElement.getText().getBytes(Charset.forName("utf-8")));
 	}
 
 	public String getFieldValue(By xpath) {
@@ -421,13 +476,17 @@ public class BasePage {
 		// switchToFrame(path);
 	}
 
-	
-	public void implicityWaitOf(Duration duration) {
-		getDriver().manage().timeouts().implicitlyWait(duration);
-		// switchToFrame(path);
-	}
+//	public void implicityWaitOf(Duration duration) {
+//		Timeouts x = getDriver().manage().timeouts().implicitlyWait(duration);
+//		try {
+//			x.wait();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		// switchToFrame(path);
+//	}
 
-	
 	public void scriptWait() {
 		getDriver().manage().timeouts().scriptTimeout(Duration.ofSeconds(60));
 
@@ -439,67 +498,62 @@ public class BasePage {
 				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
 
 		fwait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(xpath));
-		
+
 	}
-	
+
 	public void waitForElementPresence(By xpath) {
 
 		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
 				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
 
 		fwait.until(ExpectedConditions.presenceOfElementLocated(xpath));
-		
+
 	}
-	
+
 	public Wait<WebDriver> fluentWait() {
-		
-		return fluentWait(Duration.ofSeconds(2), Duration.ofMillis(250), new TimeoutException());
-				
+
+		return fluentWait(Duration.ofSeconds(3), Duration.ofMillis(250), new TimeoutException());
+
 	}
-	
-	public  <E extends Exception> Wait<WebDriver> fluentWait(E... e) {
 
+	public <E extends Exception> Wait<WebDriver> fluentWait(E... e) {
 
-		//smell: set both defaut timeout and pollig times on a propertu file!
+		// smell: set both defaut timeout and pollig times on a propertu file!
 		return fluentWait(Duration.ofSeconds(2), Duration.ofMillis(250), e);
-		
-		//wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));	
-		
-	}
-	
-	public  <E extends Exception> Wait<WebDriver> fluentWait(Duration timeOut, Duration pollingTime, E... e) {
 
-		return new FluentWait<>(getDriver()).withTimeout(timeOut)
-				.pollingEvery(pollingTime)
-				.ignoreAll(Stream.of(e).map(excp -> excp.getClass()).distinct().collect(Collectors.toList()));
-		//wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));	
-		
+		// wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
+
 	}
-	
-	
-	
+
+	public <E extends Exception> Wait<WebDriver> fluentWait(Duration timeOut, Duration pollingTime, E... e) {
+
+		return new FluentWait<>(getDriver()).withTimeout(timeOut).pollingEvery(pollingTime)
+				.ignoreAll(Stream.of(e).map(excp -> excp.getClass()).distinct().collect(Collectors.toList()));
+		// wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
+
+	}
+
 	public ExpectedCondition<WebElement> ElementIsVisible(By by) {
 		return ExpectedConditions.visibilityOfElementLocated(by);
 	}
-	
+
 	public ExpectedCondition<WebElement> ElementIsPresent(By by) {
 		return ExpectedConditions.visibilityOfElementLocated(by);
 	}
-	
 
-	
 	public void waitForElementAndClick(By xpath) {
 
-		waitForElementPresence(xpath);		
-		
+		waitForElementPresence(xpath);
+
 		getDriver().findElement(xpath).click();
 	}
 	
 	
+
 	public void implicityWait(Duration duration) {
 		getDriver().manage().timeouts().implicitlyWait(duration);
 	}
-	
+
 	public void implicityWait2(Duration duration) {
 		try {
 			getDriver().manage().window().wait(5000, 0);
@@ -508,26 +562,24 @@ public class BasePage {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void movingDivWait() {
-		
-		//BAD Smell: Put the IL time onto a page/core/which W-ever property!
-		implicityWait(Duration.ofMillis(50000));
-		
+
+		// BAD Smell: Put the IL time onto a page/core/which W-ever property!
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 //	
 	/********* url ************/
-	
-	
-	
-	
-	
+
 //	@AfterEach
 //	public static void finaliza() {
 //		DriverFactory.closeDriver();
 //	}
-	
-
-
 
 }

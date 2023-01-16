@@ -12,6 +12,7 @@ public class NavBarPage extends BasePage {
 	
 	
 	public String getNavBarStatus() {
+		waitForElementPresence(navBarLoginStatus);
 		return getText(navBarLoginStatus);
 	}
 	

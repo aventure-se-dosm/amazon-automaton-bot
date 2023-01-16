@@ -6,6 +6,11 @@ import java.time.Duration;
 
 import org.junit.After;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.BasePage;
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.CoreProperties;
@@ -82,7 +87,9 @@ public class CartPage extends BasePage {
 	public String[] addToCart() {
 		var url = getUrl();
 		System.out.println(url);
-
+		
+		
+movingDivWait();
 		clickOnElement(addToCartButton);
 
 		if (isExtendedWarrantyOffered()) {
@@ -92,14 +99,16 @@ public class CartPage extends BasePage {
 
 		// var url = getItemUrlId();
 		// obter preço do ítem (produto vezes quantidade)
+		
+		scriptWait();
+		redirectWait();
 		checkCart();
 
 		System.out.println();
 		var split = url.split("/");
 		System.out.println(split[5]);
 
-		scriptWait();
-		redirectWait();
+
 		return split;
 		// return new DTOItem(url, getItemTitle(), getNumericPrice());
 
@@ -129,8 +138,14 @@ public class CartPage extends BasePage {
 		scriptWait();
 
 		// sactisfatory div wait time
-		implicityWaitOf(Duration.ofSeconds(10));
-		waitForElements(declineExtendedWarrantyButton);
+		//implicityWaitOf(Duration.ofSeconds(10));
+		//waitForElements(declineExtendedWarrantyButton);
+		
+//		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
+//				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
+
+		
+		movingDivWait();
 		clickOnElement(declineExtendedWarrantyButton);
 	}
 
@@ -157,7 +172,7 @@ public class CartPage extends BasePage {
 
 	public void checkCart() {
 
-		clickButton(checkCartButton);
+		waitForElementAndClick(checkCartButton);
 
 	}
 

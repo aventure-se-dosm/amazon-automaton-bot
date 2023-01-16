@@ -38,12 +38,15 @@ public class LoginPage extends BasePage {
 		scriptWait();
 		
 		
-		WebElement elem = getDriver().findElement(By.xpath("//*[@id='nav-signin-tooltip']"));
-		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
-				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
-
-		fwait.until(ExpectedConditions.visibilityOf(elem));
-		moveToWebElementClick(elem);
+//		WebElement elem = getDriver().findElement(By.xpath("//*[@id='nav-signin-tooltip']"));
+//		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
+//				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
+//
+//		fwait.until(ExpectedConditions.visibilityOf(elem));
+//		moveToWebElementClick(elem);
+		
+		
+		waitForElementAndClick(By.xpath("//*[@id='nav-signin-tooltip']"));
 		return getPageTitle();
 
 	}
