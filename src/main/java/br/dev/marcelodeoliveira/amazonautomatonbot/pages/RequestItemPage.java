@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -14,8 +13,6 @@ import br.dev.marcelodeoliveira.amazonautomatonbot.core.BasePage;
 
 public class RequestItemPage extends BasePage {
 
-	
-	
 	By searchBar = By.xpath("//*[@id='twotabsearchtextbox']");
 	By searchButton = By.xpath("//*[@id='nav-search-submit-text']");
 
@@ -23,8 +20,9 @@ public class RequestItemPage extends BasePage {
 
 	By singlePageResultFrames = By.xpath("//div[@class = 'a-section a-spacing-base']/../../../parent::*");
 	By singlePageResultTitles = By.xpath("//*[@class='a-size-base-plus a-color-base a-text-normal']");
-	
-	//By singlePageResultImageFrame = By.xpath("//*[@class='a-section aok-relative s-image-square-aspect']/parent::*");
+
+	// By singlePageResultImageFrame = By.xpath("//*[@class='a-section aok-relative
+	// s-image-square-aspect']/parent::*");
 
 //	By singlePageResultTitlesPartialXPATH = By.xpath(".//*[@class='a-size-base-plus a-color-base a-text-normal']");
 	By singlePageResultTitlesPartialXPATH = By.xpath("//*[@class='a-size-base-plus a-color-base a-text-normal']");
@@ -32,29 +30,27 @@ public class RequestItemPage extends BasePage {
 	By singlePageResultImageFramePartialXPATH = By
 			.xpath(".//*[@class='a-section aok-relative s-image-square-aspect']/../../..");
 
-	
 	By resultTitleLinks = By.xpath("//*[@data-component-type='s-search-result']//h2");
 	By selectAddressLink = By.xpath("//*[@id='contextualIngressPtLabel']");
-	
+
 	By selectZipCodeLink = By.xpath("//*[id='contextualIngressPtLabel_deliveryShortLine']");
-	By BrazilianZipCodePreffix = By.xpath ("//*[@id='GLUXZipUpdateInput_0']");
-	By BrazilianZipCodeSuffix = By.xpath ("//*[@id='GLUXZipUpdateInput_1']");
+	By BrazilianZipCodePreffix = By.xpath("//*[@id='GLUXZipUpdateInput_0']");
+	By BrazilianZipCodeSuffix = By.xpath("//*[@id='GLUXZipUpdateInput_1']");
 //	By SubmitZipCodeConfirmation = By.xpath("//*[@id='GLUXZipUpdate']/..");
 	By SubmitZipCodeConfirmation = By.xpath("//*[@id='GLUXZipUpdate']/..");
-	
+
 //	@Override
 //	@Before
 //	public void startDriver() {}
-	
+
 	public RequestItemPage() {
 		super();
 	}
-	
-	
+
 	public void selectZipCode() {
-		waitForElementAndClick(selectZipCodeLink);	
+		waitForElementAndClick(selectZipCodeLink);
 	}
-	
+
 //	public void addZipCode (String zipCode) {
 //		
 //		clickOnElement(selectAddressLink);
@@ -72,120 +68,93 @@ public class RequestItemPage extends BasePage {
 //		
 //	}
 
-	
-	
-	public WebElement searchAngGatherTheFirstResultItem (String searchQueryText) {
+	public WebElement searchAngGatherTheFirstResultItem(String searchQueryText) {
 		redirectWait();
 		writeTextOnElementField(searchBar, searchQueryText);
 
 		actionMoveToWebElementAndClick(searchButton);
-		
+
 		scriptWait();
 		redirectWait();
-		
-		
-		
+
 		return null;
 	}
-	
-	public void startSearch (String searchQueryString) {
+
+	public void startSearch(String searchQueryString) {
 		System.out.println("\n\nO valor da String passada é:\n\n" + searchQueryString);
 
 		redirectWait();
 		writeTextOnElementField(searchBar, searchQueryString);
 
 		actionMoveToWebElementAndClick(searchButton);
-		
+
 		scriptWait();
 		redirectWait();
 	}
-	
+
 	private List<WebElement> searchAndGatherItems(String searchQueryText, boolean highLight) {
-		
+
 		startSearch(searchQueryText);
-		
+
 		var relevantElements = getRelevantResults(searchQueryText.trim().toLowerCase());
 
-		if (highLight)highlightElements(relevantElements);
-
-		//clickOnElement(selectAddressLink);
-		
+		if (highLight) {
+			highlightElements(relevantElements);
+		}
 		return relevantElements;
 
 	}
-	
+
 	public List<WebElement> searchAndGatherItems(String searchQueryText) {
-		
+
 		return searchAndGatherItems(searchQueryText, false);
 
 	}
-	
+
 	public List<WebElement> searchAndGatherItemsAndHighlightResults(String searchQueryText) {
-		
+
 		return searchAndGatherItems(searchQueryText, true);
 
 	}
 
 	public List<WebElement> searchAndHighlighElements(String searchQueryText) {
-		
-		var relevantElements = searchAndGatherItems(searchQueryText);
-		redirectWait();
-		highlightElements(relevantElements);
-		//System.out.println(relevantElements.get(2).getText());
-	//	System.out.println(elem.toString());
 
-				//clickOnElement(selectAddressLink);
-		
-		
-		
+		var relevantElements = searchAndGatherItems(searchQueryText);
+
+		highlightElements(relevantElements);
+
 		return relevantElements;
 
 	}
 
-
-
 	private List<WebElement> getRelevantResults(String searchQuery) {
 
 		redirectWait();
-		
 
 		var searchQueryWithTrimAndCaseLowered = searchQuery.trim().toLowerCase();
-		
-		//new String(tmp.getBytes(Charset.forName("utf-8")));
-		Predicate<WebElement> containsExactMatch = welem -> getElementsText(welem.findElement(singlePageResultTitlesPartialXPATH))
-				.toLowerCase().trim().contains(searchQueryWithTrimAndCaseLowered);
-		
-//		Predicate<WebElement> startsWithKeyword = welem -> welem.findElement(singlePageResultTitlesPartialXPATH).getText()
-//				.toLowerCase().trim().contains(searchQueryWithTrimAndCaseLowered.split(" ")[0]);
 
-//		Predicate<WebElement> isRelevant = welem -> welem.findElement(singlePageResultTitlesPartialXPATH).getText()
-//				.toLowerCase().trim().startsWith(searchQueryWithTrimAndCaseLowered.split(" ")[0]);
+		Predicate<WebElement> containsExactMatch = welem -> getElementText(
+				welem.findElement(singlePageResultTitlesPartialXPATH)).toLowerCase().trim()
+				.contains(searchQueryWithTrimAndCaseLowered);
 
 		
-		// List<WebElement> results =
-		// getDriver().findElements(singlePageResultFrames).stream().filter(isTitleRelevant).collect(Collectors.toList());
+		Predicate<WebElement> containsFirstWord = welem -> getElementText(
+				welem.findElement(singlePageResultTitlesPartialXPATH)).toLowerCase().trim()
+				.contains(searchQueryWithTrimAndCaseLowered.split(" ")[0]);
+
 
 		
 		waitForElements(singlePageResultImageFramePartialXPATH);
-		
-		var l = getDriver().findElements(singlePageResultFrames).stream().filter(containsExactMatch)
+
+		var l = getDriver().findElements(singlePageResultFrames).stream().filter(containsFirstWord)
 				.collect(Collectors.toList());
 		
 		
 
 		redirectWait();
 
-
 		return l;
 	}
 
 
-
-//	public void startSearch(String searchQueryString) {
-//		//redirectWait();
-//		writeTextOnElementField(searchBar, searchQueryString);
-//		
-//		moveToWebElementAndClick(searchButton);
-//		
-//	}
 }

@@ -23,15 +23,12 @@ public class LoginTest extends BaseTest {
 	}
 
 	@Test
-	public void loginTest() {
+	public void ID_0001_LoginTest() {
 
 		String[] expectedResults, actualResults;
 
-		// trocar estes valores por constantes!
 		expectedResults = new String[] { "Acessar Amazon", "Olá, Automation" };
 
-		// Alterar as constrantes: definir a mensagem como contatenação de properties
-		// por region!
 		actualResults = new String[] { page.startLogin(),
 
 				page.login(TestProperties.getUserEmail(), TestProperties.getUserPassword())

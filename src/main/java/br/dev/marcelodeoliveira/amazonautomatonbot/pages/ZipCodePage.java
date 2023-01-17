@@ -1,7 +1,5 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.pages;
 
-import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
-
 import java.time.Duration;
 
 import org.openqa.selenium.By;
@@ -33,14 +31,11 @@ public class ZipCodePage extends BasePage {
 
 	public String addZipCode(String zipCode) {
 
-		//redirectWait();
-		scriptWait();
 
-		// must be flexible to regional implementation rules
-		// magic numbers! refine it
-		// Should'nt you validate "invalid cpf" or "cpf regex match" cases?
-		waitForElementAndClick(selectZipCodeLink);
-		//redirectWait();
+
+		implicityWait(Duration.ofSeconds(10));
+		clickButton(selectZipCodeLink);
+
 		scriptWait();
 		
 		redirectWait();
@@ -56,8 +51,8 @@ public class ZipCodePage extends BasePage {
 		movingDivWait();
 		scriptWait();
 		switchToDefaultContent();
-		waitForElementAndClick(SubmitZipCodeConfirmation);
-		//clickButton(SubmitZipCodeConfirmation);
+		//waitForElementAndClick(SubmitZipCodeConfirmation);
+		clickButton(SubmitZipCodeConfirmation);
 		//switchToDefaultContent();
 
 
@@ -91,7 +86,6 @@ public class ZipCodePage extends BasePage {
 			
 		
 		
-		text += getElementValue(zipCodeErrorMessage);
 	}
 		return text;
 	}

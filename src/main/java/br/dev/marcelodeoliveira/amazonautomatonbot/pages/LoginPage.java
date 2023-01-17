@@ -25,12 +25,12 @@ public class LoginPage extends BasePage {
 	protected By userPasswordInput = By.xpath("//input[@id='ap_password']");
 
 	protected NavBarPage navBarPage = new NavBarPage();
-	
+
 	protected By capchaTextField = By.xpath("//input[@id='auth-captcha-guess']");
-//	protected By SubmitButton = By.xpath("//*[@id='signInSubmit']");
+
 	public LoginPage() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public String startLogin() {
@@ -38,22 +38,19 @@ public class LoginPage extends BasePage {
 
 		redirectWait();
 		scriptWait();
-		
-		
+
 		WebElement elem = getDriver().findElement(By.xpath("//*[@id='nav-signin-tooltip']"));
 		Wait<WebDriver> fwait = new FluentWait<>(getDriver()).withTimeout(Duration.ofSeconds(10))
 				.pollingEvery(Duration.ofMillis(250)).ignoring(NoSuchElementException.class);
 
 		fwait.until(ExpectedConditions.visibilityOf(elem));
 		moveToWebElementClick(elem);
-		
-		
-		//clickButton(By.xpath("//*[@id='nav-signin-tooltip']"));
+
 		return getPageTitle();
 
 	}
 
-	public void loginWriteUserEmail(String email)  {
+	public void loginWriteUserEmail(String email) {
 
 		writeTextOnElementField(userMailInput, email);
 		clickButton(emailLoginFormMailSendButton);
@@ -66,35 +63,15 @@ public class LoginPage extends BasePage {
 		clickButton(passwordLoginFormMailSendButton);
 	}
 
-	public String login(String email, String password)  {
+	public String login(String email, String password) {
 
-//esperar pag. carregar toda!
-		//redirectWait();
-		
 		implicityWait(Duration.ofSeconds(2));
-		
+
 		loginWriteUserEmail(email);
 
 		loginWriteUserPassword(password);
-		
-		//teste: passar para a lista de Byes
-		
-		
-
-		
-
-//		var expectedWelcomeMessage = navBarPage.getNavBarStatus();
-
-//		return new String[]{
-//			loginTitle,
-//			expectedWelcomeMessage
-//			};
 
 		return navBarPage.getNavBarStatus();
-
-//		var loginH1 = By.xpath("//h1[contains(., 'login')]");
-//		
-//		Assert.assertTrue(getText(loginH1).toLowerCase().contains("login"));
 
 	}
 

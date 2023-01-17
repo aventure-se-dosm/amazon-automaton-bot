@@ -5,14 +5,15 @@ import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.get
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.killDriver;
 import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.timeoutForWebDriverInitOrKill;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.rules.TestName;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -25,8 +26,6 @@ public class BaseTest {
 	
 	@Rule
 	public TestName tname = new TestName();
-
-	
 
 	
 	@Before
@@ -50,8 +49,8 @@ public class BaseTest {
 			e.printStackTrace();
 		}
 	
-		//getDriver().manage().window().setSize(new Dimension(1280, 2720));
-		//getDriver().manage().timeouts().implicitlyWait(Duration.ofMillis(750));
+//			getDriver().manage().window().maximize();
+//		getDriver().manage().timeouts().implicitlyWait(Duration.ofMillis(750));
 
 	}
 	

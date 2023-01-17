@@ -231,7 +231,7 @@ public class BasePage {
 		return getDriver().findElement(by);
 	}
 
-	public String getElementsText(WebElement elem) {
+	public String getElementText(WebElement elem) {
 		return getText(elem);
 //
 //		System.out.println(text);
@@ -239,7 +239,7 @@ public class BasePage {
 	}
 
 	public String getText(By by) {
-		return getElementsText(getDriver().findElement(by));
+		return getElementText(getDriver().findElement(by));
 		/**
 		 * Código encontrado na internet:
 		 * 
@@ -458,7 +458,7 @@ public class BasePage {
 
 	private String getText(WebElement clickableElement) {
 
-		// return clickableElement.getText();
+		 //return clickableElement.getText();
 		return new String(clickableElement.getText().getBytes(Charset.forName("utf-8")));
 	}
 
@@ -474,12 +474,12 @@ public class BasePage {
 	/********* Waits ************/
 
 	public void redirectWait() {
-		// getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100L));
+		 getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100L));
 	}
 
 	public void resultGatheringWait() {
-		// getDriver().manage().timeouts().scriptTimeout(Duration.ofMinutes(1L));
-		// switchToFrame(path);
+		 getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+
 	}
 
 //	public void implicityWaitOf(Duration duration) {

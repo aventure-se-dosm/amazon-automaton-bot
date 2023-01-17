@@ -1,11 +1,10 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.core;
 
+import java.time.Duration;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-
-import dev.failsafe.Timeout;
 
 public class DriverFactory {
 
@@ -41,6 +40,10 @@ public class DriverFactory {
 		ChromeOptions co = new ChromeOptions();
 		co.addArguments("--disable-notifications");
 		driver = new ChromeDriver(co);
+		
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofMillis(750));
+
 ////		
 //		driver = new FirefoxDriver();
 //		timeoutForWebDriverInitOrKill();

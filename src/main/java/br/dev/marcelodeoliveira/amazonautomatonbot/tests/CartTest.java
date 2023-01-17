@@ -1,7 +1,6 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.tests;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
@@ -9,18 +8,16 @@ import br.dev.marcelodeoliveira.amazonautomatonbot.core.BaseTest;
 import br.dev.marcelodeoliveira.amazonautomatonbot.core.CoreProperties;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.CartPage;
 import br.dev.marcelodeoliveira.amazonautomatonbot.pages.RequestItemPage;
-import static br.dev.marcelodeoliveira.amazonautomatonbot.core.DriverFactory.getDriver;
 
 public class CartTest extends BaseTest {
 
 	private CartPage cartPage = new CartPage();
 
 	private RequestItemPage requestPage = new RequestItemPage();
-	//private RequestItemPage requestPage = new RequestItemPage();
+	// private RequestItemPage requestPage = new RequestItemPage();
 
 	private String getFirstFoundItem(String item) {
 
-		
 		System.out.println("ãõáéíóúàèìòù");
 		// String item = "Iphone 14";
 
@@ -39,12 +36,9 @@ public class CartTest extends BaseTest {
 //		requestPage.startSearch("fogão");
 //		var fogao = getDriver().findElement(By.xpath("//*[@id='search']/div[1]/div[1]/div/span[1]/div[1]/div//h2/a[1]"));
 //		System.out.println(fogao.getText());
-		
-	//	fogao.click();
-		
-		
-		
-		
+
+		// fogao.click();
+
 		var firstItemResult = requestPage.searchAndGatherItems(item).get(0);
 //
 		firstItemResult.click();
@@ -68,13 +62,12 @@ public class CartTest extends BaseTest {
 		String item = "Iphone 14";
 		var prodUrl = getFirstFoundItem(item);
 		cartPage.addToCart();
-		
-		
-		//cartPage.checkCart();
-		
-		//getItemUrlCode
+
+		// cartPage.checkCart();
+
+		// getItemUrlCode
 		var onCartItemUrl = cartPage.getItemUrlOnTheCart();
-		onCartItemUrl = onCartItemUrl.replace(CoreProperties.BASE_PATH+"/gp/product/", "");
+		onCartItemUrl = onCartItemUrl.replace(CoreProperties.BASE_PATH + "/gp/product/", "");
 		onCartItemUrl = onCartItemUrl.substring(0, onCartItemUrl.indexOf('/'));
 		// fazer a asserção!
 		Assert.assertTrue(onCartItemUrl, prodUrl.contains(onCartItemUrl));
@@ -86,8 +79,8 @@ public class CartTest extends BaseTest {
 		final int quantitdade2itens = 2;
 
 		String item2 = "geladeira";
-		//String item1 = "fogão";
-		
+		// String item1 = "fogão";
+
 		String item1 = "foguete";
 
 		getFirstFoundItem(item1);
@@ -138,14 +131,14 @@ public class CartTest extends BaseTest {
 
 		// cartPage.checkCart();
 
-		//Assert.assertTrue(cartPage.changeQuantityTo(quantity));
+		// Assert.assertTrue(cartPage.changeQuantityTo(quantity));
 
 		//
 		Assert.assertEquals(precoInicial * integerQuantity, cartPage.getItemNumericalItemPrice(integerQuantity), 2);
 
 	}
 
-	//@Ignore
+	// @Ignore
 	@Test
 	public void addToCartAndLoginRedirectionTest() {
 
@@ -180,16 +173,11 @@ public class CartTest extends BaseTest {
 
 		cartPage.redirectWait();
 		cartPage.finishOrder();
-		
-		
-		
-		// bad smell! put it in a dictionary on later refactoring.
 
 		Assert.assertTrue(cartPage.getUrl().startsWith("https://www.amazon.com.br/ap/signin?"));
 
 	}
 
-	
 	@Test
 	public void addItemThenRemoveItAndVerifyEmptyCartTest() {
 		String item = "Iphone 14";
@@ -197,30 +185,24 @@ public class CartTest extends BaseTest {
 		var itemTitle = getFirstFoundItem(item);
 		var itemId = cartPage.addToCart();
 
-
 		cartPage.removeFromCart(itemId[5]);
-		//poderia ainda haver o assert do preço de tratamento da string de preço após a remoção! (que seja float 0.00)
 		Assert.assertTrue(cartPage.isElementDisplayed(By.xpath("//*[@class='sc-list-item-removed-msg']")));
 
 	}
-	
+
 	@Test
 	public void addItemsRemoveOneAndVerifyItsNotPresentTest() {
-		String item1 = "Iphone 14";
-		var itemTitle1 = getFirstFoundItem(item1);
-		cartPage.addToCart();
-		
-		String item2 = "Iphone 14";
-		var itemTitle2 = getFirstFoundItem(item2);
+		String item1 = "fogão";
+		getFirstFoundItem(item1);
 		cartPage.addToCart();
 
+		String item2 = "Frigideira";
+		getFirstFoundItem(item2);
+		cartPage.addToCart();
 
 		cartPage.removeFromCart("");
 		System.out.println("atestar remoção");
-		// atestar que o ítem foi removido
-		
-		
-		//poderia ainda haver o assert do preço de tratamento da string de preço após a remoção! (que seja float 0.00)
+
 		Assert.assertTrue(cartPage.isElementDisplayed(By.xpath("//*[@class='sc-list-item-removed-msg']")));
 
 	}

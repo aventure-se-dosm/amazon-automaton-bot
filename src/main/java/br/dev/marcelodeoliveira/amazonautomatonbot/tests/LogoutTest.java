@@ -59,7 +59,7 @@ public class LogoutTest extends BaseTest {
 			page.scriptWait();
 
 
-			actualResults = page.logout();
+			actualResults = page.ID_0002_Logout();
 			
 			page.redirectWait();
 			page.scriptWait();
