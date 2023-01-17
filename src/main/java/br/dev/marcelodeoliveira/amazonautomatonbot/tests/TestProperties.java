@@ -1,3 +1,4 @@
+
 package br.dev.marcelodeoliveira.amazonautomatonbot.tests;
 
 public class TestProperties {
@@ -32,3 +33,4 @@ public class TestProperties {
 				"Olá, ".concat(USER_FIRST_NAME)
 		};
 }
+

@@ -1,5 +1,6 @@
 package br.dev.marcelodeoliveira.amazonautomatonbot.core;
 
+
 import br.dev.marcelodeoliveira.amazonautomatonbot.utils.DomainUtils.Countries;
 public class CoreProperties {
 
@@ -23,5 +24,6 @@ public class CoreProperties {
 	public static final String BASE_PATH = "https://www.amazon.com.br";
 	
 	public static Countries navigationCountry = Countries.Brazil;
+
 
 }
